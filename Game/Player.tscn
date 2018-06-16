@@ -1,0 +1,355 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://script/Player.gd" type="Script" id=1]
+
+[sub_resource type="SphereShape" id=1]
+
+radius = 0.5
+
+[sub_resource type="CapsuleMesh" id=2]
+
+custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
+radius = 0.5
+mid_height = 0.8
+radial_segments = 64
+rings = 8
+
+[sub_resource type="SpatialMaterial" id=3]
+
+render_priority = 0
+flags_transparent = false
+flags_unshaded = false
+flags_vertex_lighting = false
+flags_no_depth_test = false
+flags_use_point_size = false
+flags_world_triplanar = false
+flags_fixed_size = false
+flags_albedo_tex_force_srgb = false
+vertex_color_use_as_albedo = false
+vertex_color_is_srgb = false
+params_diffuse_mode = 0
+params_specular_mode = 0
+params_blend_mode = 0
+params_cull_mode = 0
+params_depth_draw_mode = 0
+params_line_width = 1.0
+params_point_size = 1.0
+params_billboard_mode = 0
+params_grow = false
+params_use_alpha_scissor = false
+albedo_color = Color( 1, 0, 0, 1 )
+metallic = 0.0
+metallic_specular = 0.5
+metallic_texture_channel = 0
+roughness = 0.0
+roughness_texture_channel = 0
+emission_enabled = false
+normal_enabled = false
+rim_enabled = false
+clearcoat_enabled = false
+anisotropy_enabled = false
+ao_enabled = false
+depth_enabled = false
+subsurf_scatter_enabled = false
+transmission_enabled = false
+refraction_enabled = false
+detail_enabled = false
+uv1_scale = Vector3( 1, 1, 1 )
+uv1_offset = Vector3( 0, 0, 0 )
+uv1_triplanar = false
+uv1_triplanar_sharpness = 1.0
+uv2_scale = Vector3( 1, 1, 1 )
+uv2_offset = Vector3( 0, 0, 0 )
+uv2_triplanar = false
+uv2_triplanar_sharpness = 1.0
+proximity_fade_enable = false
+distance_fade_enable = false
+_sections_unfolded = [ "Albedo" ]
+
+[sub_resource type="PlaneMesh" id=4]
+
+material = SubResource( 3 )
+custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
+size = Vector2( 0.3, 0.3 )
+subdivide_width = 0
+subdivide_depth = 0
+
+[sub_resource type="Animation" id=5]
+
+resource_name = "Attack1"
+length = 0.5
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ), Transform( 0.963738, 1.16644e-08, 0.266851, 0.266851, -4.21263e-08, -0.963738, 0, 1, -4.37114e-08, -0.686776, 0.955469, 0 ), Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 1 ],
+"method": "_OnAttack"
+} ]
+}
+
+[sub_resource type="Animation" id=6]
+
+resource_name = "Attack2"
+length = 0.5
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ), Transform( 0.939347, 0, -0.342969, -0.342969, 0, -0.939347, 0, 1, 0, -0.724381, 0.894202, 0 ), Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 2 ],
+"method": "_OnAttack"
+} ]
+}
+
+[sub_resource type="Animation" id=7]
+
+resource_name = "Attack3"
+length = 0.5
+loop = false
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.24, 0.27, 0.46, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ), Transform( 0.944108, 0, -0.329635, -0.329635, 0, -0.944108, 0, 1, 0, 0, 2.43904, 0 ), Transform( 0.944108, 0, -0.329635, -0.329635, 0, -0.944108, 0, 1, 0, 0, 2.43904, 0 ), Transform( 0.918407, 0, -0.395637, -0.395637, 0, -0.918407, 0, 1, 0, -0.763485, 0.956299, 0 ), Transform( 0.918407, 0, -0.395637, -0.395637, 0, -0.918407, 0, 1, 0, -0.763485, 0.956299, 0 ), Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.27 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 3 ],
+"method": "_OnAttack"
+} ]
+}
+
+[sub_resource type="Animation" id=8]
+
+resource_name = "AttackDash"
+length = 0.6
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ), Transform( 0.939244, 0, 0.343249, 0.343249, 0, -0.939244, 0, 1, 0, -0.726074, 2.0844, 0 ), Transform( 0.939244, 0, 0.343249, 0.343249, 0, -0.939244, 0, 1, 0, -0.726074, 2.0844, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 11 ],
+"method": "_OnAttack"
+} ]
+}
+
+[sub_resource type="Animation" id=9]
+
+resource_name = "AttackSuper"
+length = 2.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 1, 1.1, 1.8, 2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ), Transform( 0.964011, 0, -0.265864, -0.265864, 0, -0.964011, 0, 1, 0, 0, 3.05678, 0 ), Transform( 0.964011, 0, -0.265864, -0.265864, 0, -0.964011, 0, 1, 0, 0, 3.05678, 0 ), Transform( 0.964011, 0, -0.265864, -0.265864, 0, -0.964011, 0, 1, 0, 0.488653, 3.63101, 0 ), Transform( 0.964011, 0, -0.265864, -0.265864, 0, -0.964011, 0, 1, 0, -1.08561, 0.169066, 0 ), Transform( 0.964011, 0, -0.265864, -0.265864, 0, -0.964011, 0, 1, 0, -1.08561, 0.169066, 0 ), Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.894202, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 1.1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 10 ],
+"method": "_OnAttack"
+} ]
+}
+
+[sub_resource type="Animation" id=10]
+
+resource_name = "Block"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.9, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.157266, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.157266, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ) ]
+}
+
+[sub_resource type="Animation" id=11]
+
+resource_name = "Dash"
+length = 0.2
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Transform( 0.955547, 0, 0.29484, 0.29484, 0, -0.955547, 0, 1, 0, -0.327884, 0.894202, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ) ]
+}
+
+[node name="Player" type="KinematicBody" index="0"]
+
+input_ray_pickable = false
+input_capture_on_drag = false
+collision_layer = 2049
+collision_mask = 1
+axis_lock_linear_x = false
+axis_lock_linear_y = true
+axis_lock_linear_z = false
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+collision/safe_margin = 0.001
+script = ExtResource( 1 )
+_sections_unfolded = [ "Collision", "Linear" ]
+
+[node name="CollisionShape" type="CollisionShape" parent="." index="0"]
+
+shape = SubResource( 1 )
+disabled = false
+
+[node name="Spatial" type="Spatial" parent="." index="1"]
+
+[node name="Player" type="MeshInstance" parent="Spatial" index="0"]
+
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 )
+layers = 1
+material_override = null
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 2 )
+skeleton = NodePath("..")
+material/0 = null
+_sections_unfolded = [ "Transform" ]
+
+[node name="MeshInstance" type="MeshInstance" parent="Spatial/Player" index="0"]
+
+transform = Transform( 0.707107, 0, -0.707107, 0.707107, -4.37114e-08, 0.707107, -3.09086e-08, -1, -3.09086e-08, -0.471676, -1.54921e-08, -0.354418 )
+layers = 1
+material_override = null
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 4 )
+skeleton = NodePath("..")
+material/0 = null
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Spatial" index="1"]
+
+root_node = NodePath("..")
+autoplay = ""
+playback_process_mode = 1
+playback_default_blend_time = 0.0
+playback_speed = 1.0
+anims/Attack1 = SubResource( 5 )
+anims/Attack2 = SubResource( 6 )
+anims/Attack3 = SubResource( 7 )
+anims/AttackDash = SubResource( 8 )
+anims/AttackSuper = SubResource( 9 )
+anims/Block = SubResource( 10 )
+anims/Dash = SubResource( 11 )
+blend_times = [  ]
+
+[connection signal="animation_finished" from="Spatial/AnimationPlayer" to="." method="_OnAnimationFinished"]
+
+

@@ -26,6 +26,7 @@ const PlayerSuperAttackDamage = preload("res://PlayerSuperAttackDamage.tscn")
 
 const DEAD_ZONE = 0.2 * 0.2
 const ZERO_ANGLE = Vector2(-1, 0)
+const WALKING_SPEED = 4.0
 
 const NATURAL_TEMP_RISE = 2.0
 const ATTACK_TEMP_RISE = 10.0
@@ -49,6 +50,7 @@ enum Mode{
 	DASH
 	DASH_ATTACK
 	BLOCK
+	DAMAGE
 }
 
 
@@ -70,7 +72,8 @@ var mBlockCooldown
 onready var mLabel = get_node("../Label")
 
 
-func Init():
+func Init(pos):
+	translation = pos
 	mMode = Mode.IDLE
 	Dead = false
 	mTemperature = 20.0
@@ -82,9 +85,19 @@ func Init():
 	mLabel.text = str(mTemperature, " ", mTemperatureBuffer)
 
 func OnDamage(amount, push, origin):
+	if mMode == Mode.SUPER_ATTACK:
+		# We are immune here
+		return
+	
 	if mMode == Mode.BLOCK:
 		amount *= .2
 		push *= .5
+	elif mMode in [Mode.IDLE, Mode.WALK, Mode.COOLDOWN]:
+		# Note how damage disrupts cooldown
+		# TODO: Play anim
+		print("anim damage")
+		mMode = Mode.DAMAGE
+		mMode = Mode.IDLE
 	mTemperature -= amount
 
 func _OnAnimationFinished(animName):
@@ -104,6 +117,10 @@ func _OnAnimationFinished(animName):
 		mMode = Mode.IDLE
 	elif mMode == Mode.BLOCK:
 		mBlockCooldown = BLOCK_COOLDOWN_TIME
+		# TODO: Play anim
+		print("anim idle")
+		mMode = Mode.IDLE
+	elif mMode == Mode.DAMAGE:
 		# TODO: Play anim
 		print("anim idle")
 		mMode = Mode.IDLE
@@ -138,7 +155,7 @@ func _OnAttack(a):
 		get_parent().add_child(dmg)
 
 func _ready():
-	Init()
+	Init(Vector3())
 
 func _physics_process(delta):
 	if Dead:
@@ -171,7 +188,7 @@ func _physics_process(delta):
 		if axis.length_squared() >= DEAD_ZONE:
 			mvec.x = axis.x
 			mvec.z = axis.y
-		mvec = mvec.normalized() * 4.0
+		mvec = mvec.normalized() * WALKING_SPEED
 		if mvec.length_squared() != 0:
 			if mMode != Mode.WALK:
 				# TODO: Play anim walk
