@@ -29,7 +29,7 @@ const HALF_FOV = PI * .4
 const MAX_SEARCH_TIME = 5.0
 const MAX_DISTANCE_FROM_HOME_SQ = 3.0 * 3.0
 const ATTACK_RANGE_SQ = 1.5 * 1.5
-const ESCAPE_HP = 400
+const ESCAPE_HP = 100
 const HP_REGEN = 1.0
 const ATTACK_COOLDOWN = 1.0
 
@@ -111,10 +111,6 @@ func _OnAttack():
 	dmg.translation = translation
 	dmg.rotation = mObject.rotation
 	get_parent().add_child(dmg)
-
-func _ready():
-	Init(Vector3(-4, 0, 4))
-	Target = get_node("../Player")
 
 func _physics_process(delta):
 	_SearchTarget()

@@ -20,4 +20,13 @@
 
 extends Node
 
+func _ready():
+	var Enemy = load("res://Enemy.tscn")
+	var plr = $Characters/Player
+	var cont = $Characters
+	for i in range(5):
+		var e = Enemy.instance()
+		cont.add_child(e)
+		e.Init(Vector3(rand_range(-5, 5), 0, rand_range(-5, 5)))
+		e.Target = plr
 

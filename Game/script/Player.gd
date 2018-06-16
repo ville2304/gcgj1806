@@ -69,7 +69,7 @@ var mSupercharged
 var mAttackComplete
 var mDashCooldown
 var mBlockCooldown
-onready var mLabel = get_node("../Label")
+onready var mLabel = get_node("../../Label")
 
 
 func Init(pos):
@@ -88,7 +88,6 @@ func OnDamage(amount, push, origin):
 	if mMode == Mode.SUPER_ATTACK:
 		# We are immune here
 		return
-	
 	if mMode == Mode.BLOCK:
 		amount *= .2
 		push *= .5
