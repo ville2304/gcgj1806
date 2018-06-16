@@ -32,7 +32,11 @@ const ATTACK_TEMP_RISE = 10.0
 const DASH_TEMP_RISE = 10.0
 const NATURAL_TEMP_DECREASE = 1.0
 const SUPER_TEMP_DECREASE = 50.0
+const BLOCK_TEMP_DECREASE = 10.0
 const COOLDOWN_TEMP_DECREASE_MAX = 10.0
+
+const DASH_COOLDOWN_TIME = 1.0
+const BLOCK_COOLDOWN_TIME = 0.5
 
 enum Mode{
 	IDLE
@@ -84,13 +88,22 @@ func OnDamage(amount, push, origin):
 	mTemperature -= amount
 
 func _OnAnimationFinished(animName):
+	if Dead:
+		# TODO: Broadcast death
+		print("Game over!")
+		return
 	if mMode in [Mode.ATTACK1, Mode.ATTACK2, Mode.ATTACK3, Mode.SUPER_ATTACK]:
 		if mAttackComplete:
 			# TODO: Play anim
 			print("anim idle")
 			mMode = Mode.IDLE
 	elif mMode in [Mode.DASH, Mode.DASH_ATTACK]:
-		mDashCooldown = 1.0
+		mDashCooldown = DASH_COOLDOWN_TIME
+		# TODO: Play anim
+		print("anim idle")
+		mMode = Mode.IDLE
+	elif mMode == Mode.BLOCK:
+		mBlockCooldown = BLOCK_COOLDOWN_TIME
 		# TODO: Play anim
 		print("anim idle")
 		mMode = Mode.IDLE
@@ -130,7 +143,8 @@ func _ready():
 func _physics_process(delta):
 	if Dead:
 		return
-	mDashCooldown-= delta
+	mDashCooldown = max(0, mDashCooldown - delta)
+	mBlockCooldown = max(0, mBlockCooldown - delta)
 	
 	if Input.is_action_just_pressed("cooldown"):
 		# TODO: Play cooldown animation
@@ -190,7 +204,6 @@ func _physics_process(delta):
 		# TODO: Play anim death
 		print("anim death")
 		Dead = true
-		# TODO: Broadcast death
 	mTemperature = clamp(mTemperature, 0, 100)
 	
 	if mTemperature >= 100:
@@ -205,6 +218,16 @@ func _physics_process(delta):
 		mSupercharged = false
 	
 	mLabel.text = "%.2f %.2f" % [mTemperature, mTemperatureBuffer]
+	
+	# Block
+	if Input.is_action_just_pressed("block") && (mMode == Mode.IDLE || mMode == Mode.WALK):
+		if mBlockCooldown > 0:
+			# TODO: Add cue
+			pass
+		else:
+			mTemperature -= BLOCK_TEMP_DECREASE
+			mAnimationPlayer.play("Block")
+			mMode = Mode.BLOCK
 	
 	# Dash
 	if Input.is_action_just_pressed("dash") && (mMode == Mode.IDLE || mMode == Mode.WALK):

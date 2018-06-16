@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://script/Main.gd" type="Script" id=1]
 [ext_resource path="res://script/Camera.gd" type="Script" id=2]
@@ -242,6 +242,25 @@ tracks/1/keys = {
 } ]
 }
 
+[sub_resource type="Animation" id=14]
+
+resource_name = "Block"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.9, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.157266, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.157266, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ) ]
+}
+
 [sub_resource type="Animation" id=12]
 
 resource_name = "Dash"
@@ -379,6 +398,7 @@ anims/Attack2 = SubResource( 9 )
 anims/Attack3 = SubResource( 10 )
 anims/AttackDash = SubResource( 13 )
 anims/AttackSuper = SubResource( 11 )
+anims/Block = SubResource( 14 )
 anims/Dash = SubResource( 12 )
 blend_times = [  ]
 
