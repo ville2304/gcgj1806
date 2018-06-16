@@ -20,21 +20,32 @@
 
 extends KinematicBody
 
+const PlayerAttackDamage = preload("res://PlayerAttackDamage.tscn")
+const PlayerSuperAttackDamage = preload("res://PlayerSuperAttackDamage.tscn")
+
+
 const DEAD_ZONE = 0.2 * 0.2
 const ZERO_ANGLE = Vector2(-1, 0)
 
 const NATURAL_TEMP_RISE = 4.0
-const NATURAL_TEMP_DECREASE = 0.5
+const ATTACK_TEMP_RISE = 10.0
+const NATURAL_TEMP_DECREASE = 1.0
+const SUPER_TEMP_DECREASE = 50.0
 const COOLDOWN_TEMP_DECREASE_MAX = 10.0
 
 enum Mode{
 	IDLE
 	WALK
 	COOLDOWN
+	ATTACK1
+	ATTACK2
+	ATTACK3
+	SUPER_ATTACK
 }
 
 
 onready var mObject = $Spatial
+onready var mAnimationPlayer = $Spatial/AnimationPlayer
 
 var Dead setget ,isDead
 func isDead():
@@ -42,8 +53,10 @@ func isDead():
 
 var mMode
 var mTemperature
+var mTemperatureBuffer
 var mCooldownTimer
 var mSupercharged
+var mAttackComplete
 onready var mLabel = get_node("../Label")
 
 
@@ -51,8 +64,36 @@ func Init():
 	mMode = Mode.IDLE
 	Dead = false
 	mTemperature = 20.0
+	mTemperatureBuffer = 0.0
+	mAttackComplete = true
 	mSupercharged = false
-	mLabel.text = str(mTemperature)
+	mLabel.text = str(mTemperature, " ", mTemperatureBuffer)
+
+func _OnAnimationFinished(animName):
+	if mMode in [Mode.ATTACK1, Mode.ATTACK2, Mode.ATTACK3, Mode.SUPER_ATTACK]:
+		if mAttackComplete:
+			# TODO: Play anim
+			print("anim idle")
+			mMode = Mode.IDLE
+
+func _OnAttack(a):
+	mAttackComplete = true
+	if a <= 3:
+		mTemperatureBuffer+= ATTACK_TEMP_RISE * a
+		var dmg = PlayerAttackDamage.instance()
+		dmg.amount = 5 * a * mTemperature
+		dmg.translation = translation
+		dmg.rotation = mObject.rotation
+		if a == 3:
+			dmg.tremor = .4
+		get_parent().add_child(dmg)
+	if a == 10:
+		# Super attack
+		mTemperature -= SUPER_TEMP_DECREASE
+		var dmg = PlayerSuperAttackDamage.instance()
+		dmg.translation = translation
+		dmg.amount = 50 * mTemperature
+		get_parent().add_child(dmg)
 
 func _ready():
 	Init()
@@ -101,6 +142,10 @@ func _physics_process(delta):
 				mMode = Mode.IDLE
 	
 	# Temperature control
+	if mTemperatureBuffer > 0:
+		var value = min(mTemperatureBuffer, mTemperatureBuffer * delta * .5)
+		mTemperatureBuffer-= value
+		mTemperature+= value
 	if mMode == Mode.WALK:
 		mTemperature += NATURAL_TEMP_RISE * delta
 	elif mMode == Mode.IDLE:
@@ -129,6 +174,40 @@ func _physics_process(delta):
 			print("anim supercharge off")
 		mSupercharged = false
 	
-	mLabel.text = str(mTemperature)
+	mLabel.text = "%.2f %.2f" % [mTemperature, mTemperatureBuffer]
+	
+	# Attacks
+	if Input.is_action_just_pressed("attack"):
+		if mMode == Mode.IDLE || mMode == Mode.WALK:
+			if mSupercharged:
+				_SuperAttack(false)
+			else:
+				mAttackComplete = false
+				mAnimationPlayer.play("Attack1")
+				mMode = Mode.ATTACK1
+		elif mMode == Mode.ATTACK1:
+			if mAttackComplete:
+				if mSupercharged:
+					_SuperAttack(true)
+				else:
+					mAttackComplete = false
+					mAnimationPlayer.queue("Attack2")
+					mMode = Mode.ATTACK2
+		elif mMode == Mode.ATTACK2:
+			if mAttackComplete:
+				if mSupercharged:
+					_SuperAttack(true)
+				else:
+					mAttackComplete = false
+					mAnimationPlayer.queue("Attack3")
+					mMode = Mode.ATTACK3
+
+func _SuperAttack(queue):
+	mAttackComplete = false
+	if queue:
+		mAnimationPlayer.queue("AttackSuper")
+	else:
+		mAnimationPlayer.play("AttackSuper")
+	mMode = Mode.SUPER_ATTACK
 
 

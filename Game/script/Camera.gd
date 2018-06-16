@@ -37,12 +37,14 @@ var mShakeIntensity = 0
 
 
 func Tremor(at, strength):
+	if strength < .1:
+		return
 	var dist = max(0.1, translation.distance_to(at))
-	var intensity = clamp(strength / (dist * dist), 0, 1)
+	var intensity = clamp(1 / (dist * dist), 0, strength)
 	if intensity < .05:
 		return
 	mShake = Vector3()
-	mShakeLength = .5
+	mShakeLength = intensity * .8
 	mShakeTime = 0
 	mShakeIntensity = intensity
 
