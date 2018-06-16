@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://script/Main.gd" type="Script" id=1]
 [ext_resource path="res://script/Camera.gd" type="Script" id=2]
@@ -176,6 +176,39 @@ tracks/1/keys = {
 } ]
 }
 
+[sub_resource type="Animation" id=13]
+
+resource_name = "AttackDash"
+length = 0.6
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ), Transform( 0.939244, 0, 0.343249, 0.343249, 0, -0.939244, 0, 1, 0, -0.726074, 2.0844, 0 ), Transform( 0.939244, 0, 0.343249, 0.343249, 0, -0.939244, 0, 1, 0, -0.726074, 2.0844, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 11 ],
+"method": "_OnAttack"
+} ]
+}
+
 [sub_resource type="Animation" id=11]
 
 resource_name = "AttackSuper"
@@ -207,6 +240,25 @@ tracks/1/keys = {
 "args": [ 10 ],
 "method": "_OnAttack"
 } ]
+}
+
+[sub_resource type="Animation" id=12]
+
+resource_name = "Dash"
+length = 0.2
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Player:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Transform( 0.955547, 0, 0.29484, 0.29484, 0, -0.955547, 0, 1, 0, -0.327884, 0.894202, 0 ), Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 ) ]
 }
 
 [sub_resource type="PlaneMesh" id=2]
@@ -281,8 +333,6 @@ disabled = false
 
 [node name="Spatial" type="Spatial" parent="Player" index="1"]
 
-editor/display_folded = true
-
 [node name="Player" type="MeshInstance" parent="Player/Spatial" index="0"]
 
 editor/display_folded = true
@@ -327,7 +377,9 @@ playback_speed = 1.0
 anims/Attack1 = SubResource( 8 )
 anims/Attack2 = SubResource( 9 )
 anims/Attack3 = SubResource( 10 )
+anims/AttackDash = SubResource( 13 )
 anims/AttackSuper = SubResource( 11 )
+anims/Dash = SubResource( 12 )
 blend_times = [  ]
 
 [node name="Enemy" parent="." index="2" instance=ExtResource( 4 )]

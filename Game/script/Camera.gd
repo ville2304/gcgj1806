@@ -55,8 +55,9 @@ func _ready():
 func _process(delta):
 	var diff = translation - mTarget.global_transform.origin
 	diff.y = 0
-	if diff.length_squared() > threshold * threshold:
-		translate(diff * -delta)
+	var ln = diff.length_squared()
+	if ln > threshold * threshold:
+		translate(diff * ln * .5 * -delta)
 	
 	var offset = Vector3()
 	var axis = Vector2(Input.get_joy_axis(0, JOY_ANALOG_RX), Input.get_joy_axis(0, JOY_ANALOG_RY))
