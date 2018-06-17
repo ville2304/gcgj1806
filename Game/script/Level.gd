@@ -23,11 +23,9 @@ extends Node
 onready var mGridMap = $GridMap
 onready var mNavigation = $Navigation
 
-
-func Init():
-	var width = 10
-	var height = 10
-	var data = [
+var Width = 10
+var Height = 10
+var Data = [
 	0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,
 	0,0,1,1,1,0,0,0,0,0,
@@ -39,7 +37,8 @@ func Init():
 	0,0,0,0,0,2,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0
 	]
-	
+
+func Init():
 	"""
 	var vertices = PoolVector2Array()
 	vertices.append(Vector2(0, 0))
@@ -52,9 +51,9 @@ func Init():
 	"""
 	var MeltingTile = load("res://MeltingTile.tscn")
 	
-	for y in range(height):
-		for x in range(width):
-			var tile = data[x + y * width]
+	for y in range(Height):
+		for x in range(Width):
+			var tile = Data[x + y * Width]
 			if tile == 1:
 				# Wall
 				mGridMap.set_cell_item(x, 0, y, 1)

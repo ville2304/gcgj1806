@@ -52,6 +52,7 @@ enum Mode{
 	BLOCK
 	DAMAGE
 	FALL
+	TELEPORT
 }
 
 
@@ -109,6 +110,15 @@ func OnFall(origin):
 	mAnimationPlayer.play("Block")
 	mMode = Mode.FALL
 
+func Teleport(origin):
+	# Stop floor from melting
+	set_collision_layer_bit(12, false)
+	translation = origin
+	# TODO: Play anim
+	print("anim teleport")
+	mAnimationPlayer.play("Block")
+	mMode = Mode.TELEPORT
+
 func _OnAnimationFinished(animName):
 	if Dead:
 		get_parent().DestroyCharacter(self)
@@ -132,6 +142,8 @@ func _OnAnimationFinished(animName):
 		# TODO: Play anim
 		print("anim idle")
 		mMode = Mode.IDLE
+	elif mMode == Mode.TELEPORT:
+		get_parent().PlayerTeleport()
 
 func _OnAttack(a):
 	mAttackComplete = true

@@ -26,18 +26,16 @@ onready var mLevel = get_node("../Level")
 func Navigate(from, to):
 	mLevel.Navigate(Vector2(from.x, from.z), Vector2(to.x, to.z))
 
-# TODO: Implement me
 func AddCharacter(c):
-	pass
+	add_child(c)
 
-# TODO: Implement me
 func DestroyCharacter(c):
 	remove_child(c)
 	if c.name == "Player":
-		# TODO: Broadcast death
-		get_node("../CameraController").Target = null
-		print("Game over!")
+		get_parent().PlayerDied(c.translation)
 	else:
-		if get_child_count() <= 1:
-			# TODO: Victory
-			print("Victory!")
+		if get_child_count() == 1:
+			get_parent().OpenPortal(get_child(0).translation)
+
+func PlayerTeleport():
+	get_parent().NextLevel()

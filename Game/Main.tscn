@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://script/Main.gd" type="Script" id=1]
 [ext_resource path="res://script/Camera.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Player.tscn" type="PackedScene" id=4]
 [ext_resource path="res://script/Level.gd" type="Script" id=5]
 [ext_resource path="res://Tiles.tres" type="MeshLibrary" id=6]
+[ext_resource path="res://EndPortal.tscn" type="PackedScene" id=7]
 
 [node name="Main" type="Node" index="0"]
 
@@ -90,5 +91,12 @@ size_flags_vertical = 4
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
+
+[node name="CamTarget" type="Spatial" parent="." index="4"]
+
+[node name="EndPortal" parent="." index="5" instance=ExtResource( 7 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0 )
+visible = false
 
 
