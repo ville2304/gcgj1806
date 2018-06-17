@@ -41,10 +41,12 @@ enum Mode{
 	DAMAGE
 	DEATH
 	ATTACK
+	FALL
 }
 
 
 var Target
+var Dead
 
 var mHome
 var mEngaged
@@ -83,9 +85,11 @@ func Init(pos):
 func OnDamage(amount, push, origin):
 	mHP -= amount
 	if mHP <= 0:
-		# TODO: Death
+		Dead = true
+		# TODO: Play anim
+		print("enemy anim death")
+		mAnimationPlayer.play("Damage")
 		mMode = Mode.DEATH
-		get_parent().remove_child(self)
 		return
 	if !mMode in [Mode.IDLE, Mode.WALK]:
 		return
@@ -95,7 +99,18 @@ func OnDamage(amount, push, origin):
 		mDestination = origin
 	mMode = Mode.DAMAGE
 
+func OnFall(origin):
+	Dead = true
+	translation = origin
+	# TODO: Play anim
+	print("enemy anim fall")
+	mAnimationPlayer.play("Damage")
+	mMode = Mode.FALL
+
 func _OnAnimationFinished(animName):
+	if Dead:
+		get_parent().DestroyCharacter(self)
+		return
 	if mMode in [Mode.ALERT, Mode.DAMAGE]:
 		# TODO: play anim
 		print("enemy anim idle")

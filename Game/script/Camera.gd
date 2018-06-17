@@ -23,10 +23,11 @@ extends Spatial
 const DEAD_ZONE = 0.1 * 0.1
 const MAX_OFFSET = 4
 
-export(NodePath) var target
+
 export(float, 0, 5) var threshold = 2.0
 
-onready var mTarget = get_node(target)
+var Target = null
+
 onready var mCam = $Camera
 onready var mCamPos = mCam.translation
 
@@ -48,12 +49,10 @@ func Tremor(at, strength):
 	mShakeTime = 0
 	mShakeIntensity = intensity
 
-func _ready():
-	mTarget = get_node(target)
-	set_process(true)
-
 func _process(delta):
-	var diff = translation - mTarget.global_transform.origin
+	var diff = translation
+	if Target != null:
+		diff -= Target.global_transform.origin
 	diff.y = 0
 	var ln = diff.length_squared()
 	if ln > threshold * threshold:

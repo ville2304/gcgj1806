@@ -51,15 +51,14 @@ enum Mode{
 	DASH_ATTACK
 	BLOCK
 	DAMAGE
+	FALL
 }
 
 
 onready var mObject = $Spatial
 onready var mAnimationPlayer = $Spatial/AnimationPlayer
 
-var Dead setget ,isDead
-func isDead():
-	return Dead
+var Dead
 
 var mMode
 var mTemperature
@@ -84,6 +83,9 @@ func Init(pos):
 	mBlockCooldown = 0.0
 	mLabel.text = str(mTemperature, " ", mTemperatureBuffer)
 
+func GetTemperature():
+	return mTemperature
+
 func OnDamage(amount, push, origin):
 	if mMode == Mode.SUPER_ATTACK:
 		# We are immune here
@@ -99,10 +101,17 @@ func OnDamage(amount, push, origin):
 		mMode = Mode.IDLE
 	mTemperature -= amount
 
+func OnFall(origin):
+	Dead = true
+	translation = origin
+	# TODO: Play anim
+	print("anim fall")
+	mAnimationPlayer.play("Block")
+	mMode = Mode.FALL
+
 func _OnAnimationFinished(animName):
 	if Dead:
-		# TODO: Broadcast death
-		print("Game over!")
+		get_parent().DestroyCharacter(self)
 		return
 	if mMode in [Mode.ATTACK1, Mode.ATTACK2, Mode.ATTACK3, Mode.SUPER_ATTACK]:
 		if mAttackComplete:
@@ -217,9 +226,10 @@ func _physics_process(delta):
 		mTemperature -= min(mCooldownTimer, COOLDOWN_TEMP_DECREASE_MAX)
 	
 	if mTemperature <= 0:
+		Dead = true
 		# TODO: Play anim death
 		print("anim death")
-		Dead = true
+		mAnimationPlayer.play("Block")
 	mTemperature = clamp(mTemperature, 0, 100)
 	
 	if mTemperature >= 100:

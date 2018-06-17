@@ -20,7 +20,9 @@
 
 extends Node
 
+onready var mGridMap = $GridMap
 onready var mNavigation = $Navigation
+
 
 func Init():
 	var width = 10
@@ -31,15 +33,14 @@ func Init():
 	0,0,1,1,1,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,2,0,0,0,0,
+	0,0,0,0,0,2,0,0,0,0,
+	0,0,0,0,0,2,0,0,0,0,
+	0,0,0,0,0,2,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0
 	]
-	var Wall = load("res://Wall.tscn")
 	
-	# FIXME: This could be greatly optimized
+	"""
 	var vertices = PoolVector2Array()
 	vertices.append(Vector2(0, 0))
 	vertices.append(Vector2(1, 0))
@@ -48,18 +49,36 @@ func Init():
 	var navmesh = NavigationPolygon.new()
 	navmesh.add_outline(vertices)
 	navmesh.make_polygons_from_outlines()
+	"""
+	var MeltingTile = load("res://MeltingTile.tscn")
+	
 	for y in range(height):
 		for x in range(width):
-			if data[x + y * width] == 1:
-				var w = Wall.instance()
-				w.translation = Vector3(x, 0, y)
-				add_child(w)
+			var tile = data[x + y * width]
+			if tile == 1:
+				# Wall
+				mGridMap.set_cell_item(x, 0, y, 1)
+				#var w = Wall.instance()
+				#w.translation = Vector3(x, 0, y)
+				#add_child(w)
+			elif tile == 2:
+				# Melting tile
+				mGridMap.set_cell_item(x, 0, y, 2)
+				var mt = MeltingTile.instance()
+				mt.translation = Vector3(x, 0, y)
+				$MeltingTiles.add_child(mt)
 			else:
+				mGridMap.set_cell_item(x, 0, y, 0)
+				# Floor
+				pass
+				"""
 				var trans = Transform2D()
 				trans.origin = Vector2(x, y)
 				mNavigation.navpoly_add(navmesh, trans)
+				"""
 
 func Navigate(from, to):
+	return []
 	return mNavigation.get_simple_path(from, to)
 
 func _ready():

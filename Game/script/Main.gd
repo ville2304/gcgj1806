@@ -21,10 +21,12 @@
 extends Node
 
 func _ready():
+	$CameraController.Target = $Characters/Player
+	
 	var Enemy = load("res://Enemy.tscn")
 	var plr = $Characters/Player
 	var cont = $Characters
-	for i in range(5):
+	for i in range(1):
 		var e = Enemy.instance()
 		cont.add_child(e)
 		e.Init(Vector3(rand_range(0, 10), 0, rand_range(0, 10)))

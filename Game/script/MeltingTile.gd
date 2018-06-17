@@ -18,26 +18,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-extends Node
+extends Area
 
-onready var mLevel = get_node("../Level")
+var mBodies
+var mCondition
+var mHeat
 
+func _ready():
+	mBodies = 0
+	mHeat = 0.0
+	mCondition = 5.0
 
-func Navigate(from, to):
-	mLevel.Navigate(Vector2(from.x, from.z), Vector2(to.x, to.z))
-
-# TODO: Implement me
-func AddCharacter(c):
-	pass
-
-# TODO: Implement me
-func DestroyCharacter(c):
-	remove_child(c)
-	if c.name == "Player":
-		# TODO: Broadcast death
-		get_node("../CameraController").Target = null
-		print("Game over!")
+func _physics_process(delta):
+	var ob = get_overlapping_bodies()
+	var oblen = ob.size()
+	for i in ob:
+		if mCondition <= 0:
+			if !i.Dead:
+				i.OnFall(translation)
+		elif i.get_collision_layer_bit(12):
+			if i.has_method("GetTemperature"):
+				mHeat += delta * i.GetTemperature() / 20.0
+			else:
+				mHeat += delta
+	if mHeat > .1:
+		var value = min(mHeat, mHeat * delta * .5)
+		mHeat-= value
+		mCondition-= value
 	else:
-		if get_child_count() <= 1:
-			# TODO: Victory
-			print("Victory!")
+		mCondition+= delta
+	mCondition = clamp(mCondition, -8.0, 5.0)
+	if mCondition <= 0 && oblen > 0:
+		mCondition = -8.0
+	var s = clamp(mCondition, 0, 5) / 5.0
+	$MeshInstance.scale = Vector3(s, 1, s)

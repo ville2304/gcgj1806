@@ -5,13 +5,7 @@
 [ext_resource path="res://script/CharacterManager.gd" type="Script" id=3]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=4]
 [ext_resource path="res://script/Level.gd" type="Script" id=5]
-
-[sub_resource type="PlaneMesh" id=2]
-
-custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
-size = Vector2( 10, 10 )
-subdivide_width = 0
-subdivide_depth = 0
+[ext_resource path="res://Tiles.tres" type="MeshLibrary" id=6]
 
 [node name="Main" type="Node" index="0"]
 
@@ -23,7 +17,6 @@ script = ExtResource( 1 )
 
 editor/display_folded = true
 script = ExtResource( 2 )
-target = NodePath("../Characters/Player")
 threshold = 1.0
 
 [node name="Camera" type="Camera" parent="CameraController" index="0"]
@@ -57,22 +50,26 @@ script = ExtResource( 5 )
 
 _sections_unfolded = [ "Transform" ]
 
-[node name="Floor" type="MeshInstance" parent="Level" index="1"]
+[node name="GridMap" type="GridMap" parent="Level" index="1"]
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 4.5 )
-layers = 1
-material_override = null
-cast_shadow = 1
-extra_cull_margin = 0.0
-use_in_baked_light = false
-lod_min_distance = 0.0
-lod_min_hysteresis = 0.0
-lod_max_distance = 0.0
-lod_max_hysteresis = 0.0
-mesh = SubResource( 2 )
-skeleton = NodePath("..")
-material/0 = null
-_sections_unfolded = [ "Transform" ]
+theme = ExtResource( 6 )
+cell_size = Vector3( 1, 1, 1 )
+cell_octant_size = 8
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+cell_scale = 1.0
+collision_layer = 1
+collision_mask = 1
+data = {
+"cells": PoolIntArray(  )
+}
+_sections_unfolded = [ "Cell" ]
+__meta__ = {
+"_editor_clip_": 0
+}
+
+[node name="MeltingTiles" type="Node" parent="Level" index="2"]
 
 [node name="Label" type="Label" parent="." index="3"]
 
