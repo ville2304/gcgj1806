@@ -249,8 +249,17 @@ func _Loiter():
 				print("enemy anim idle")
 				mMode = Mode.IDLE
 			return
-		# FIXME: Make sure that destination is free tile
 		mDestination = mHome + Vector3(rand_range(-1, 1), 0, rand_range(-1, 1)).normalized() * sqrt(MAX_DISTANCE_FROM_HOME_SQ)
+		mDestination = mDestination.round()
+		# FIXME: Gaah!
+		var lvl = get_node("/root/Main/Level")
+		if mDestination.x < 0 || mDestination.x >= lvl.Width || mDestination.y < 0 || mDestination.y >= lvl.Height:
+			mDestination = null
+			return
+		var tile = lvl.Data[mDestination.x + mDestination.y * lvl.Width]
+		if tile != 0 && tile != 2:
+			mDestination = null
+			return
 		if mMode != Mode.WALK:
 			# TODO: play anim
 			print("enemy anim walk 2")

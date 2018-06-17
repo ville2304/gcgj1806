@@ -52,7 +52,7 @@ func OpenPortal(pos):
 				continue
 			if xx == 0 && yy == 0:
 				continue
-			var tile = lvl.Data[xx + yy * lvl.Height]
+			var tile = lvl.Data[xx + yy * lvl.Width]
 			if tile == 0 || tile == 2:
 				possible.push_back(Vector3(xx, 0, yy))
 	if possible.empty():
