@@ -21,4 +21,5 @@
 extends Area
 
 func _OnBodyEntered(body):
-	body.Teleport(translation)
+	if body.has_method("Teleport"):
+		body.Teleport(translation)

@@ -82,6 +82,7 @@ func Init(pos):
 	mSupercharged = false
 	mDashCooldown = 0.0
 	mBlockCooldown = 0.0
+	mObject.rotation.y = rand_range(0, 2 * PI)
 	mLabel.text = str(mTemperature, " ", mTemperatureBuffer)
 
 func GetTemperature():

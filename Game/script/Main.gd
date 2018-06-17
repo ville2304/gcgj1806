@@ -30,7 +30,8 @@ func PlayerDied(pos):
 	mPlayer = null
 	$CamTarget.translation = pos
 	$CameraController.Target = $CamTarget
-	print("Game over!")
+	_ChangeLevel()
+	$Menu.Open()
 
 func OpenPortal(pos):
 	var lvl = $Level
@@ -40,29 +41,38 @@ func OpenPortal(pos):
 	print("Open portal")
 	
 	# We just hope one of the adjacent tiles is free.
-	for y in range(-1, 1):
+	var possible = []
+	for y in range(-1, 2):
 		var yy = int(round(pos.z)) + y
 		if yy < 0 || yy >= lvl.Height:
 			continue
-		for x in range(-1, 1):
+		for x in range(-1, 2):
 			var xx = int(round(pos.x)) + x
 			if xx < 0 || xx >= lvl.Width:
 				continue
-			if lvl.Data[xx + yy * lvl.Height] != 1:
-				portal.translation = Vector3(xx, 0, yy)
-				return
-	# Nope
-	portal.translation = pos
+			if xx == 0 && yy == 0:
+				continue
+			var tile = lvl.Data[xx + yy * lvl.Height]
+			if tile == 0 || tile == 2:
+				possible.push_back(Vector3(xx, 0, yy))
+	if possible.empty():
+		# Nope
+		portal.translation = pos
+	else:
+		portal.translation = possible[int(rand_range(0, possible.size() - 1))]
 
 func NextLevel():
 	print("Victory!")
-	# TODO: Add fade
-	_StartLevel()
+	_ChangeLevel()
 
 func GetPlayer():
 	return mPlayer
 
-func _StartLevel():
+func _ChangeLevel():
+	$Fade/AnimationPlayer.connect("animation_finished", self, "_StartLevel", [], CONNECT_ONESHOT)
+	$Fade/AnimationPlayer.play("FadeIn")
+
+func _StartLevel(none = null):
 	# Make new level
 	var lvl = $Level
 	lvl.Init()
@@ -83,7 +93,7 @@ func _StartLevel():
 			if ePossible.empty():
 				ePossible.push_back(i)
 			else:
-				var index = int(rand_range(0, possible.size()))
+				var index = int(rand_range(0, possible.size() - 1))
 				ePossible.push_back(ePossible[index])
 				ePossible[index] = i
 	if possible.empty():
@@ -97,6 +107,7 @@ func _StartLevel():
 	$CameraController.translation = plr.translation
 	
 	var numEnemies = min(int(sqrt(lvl.Width * lvl.Height) + 2), ePossible.size() - 1)
+	numEnemies = 1
 	for i in range(numEnemies):
 		var e = Enemy.instance()
 		chars.AddCharacter(e)
@@ -108,6 +119,8 @@ func _StartLevel():
 	var portal = $EndPortal
 	portal.hide()
 	portal.translation = Vector3(0, -100, 0)
+	
+	$Fade/AnimationPlayer.play("FadeOut")
 
 func _ready():
 	randomize()

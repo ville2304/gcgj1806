@@ -20,7 +20,7 @@
 
 extends Node
 
-var mOpen = false
+var mOpen = true
 onready var mCamera = get_node("../CameraController")
 onready var mTargetOrigin = $TargetOrigin
 onready var mTarget = $TargetOrigin/Target
@@ -28,6 +28,8 @@ onready var mTarget = $TargetOrigin/Target
 
 func Open():
 	get_tree().paused = true
+	if !mOpen:
+		$MenuView/AnimationPlayer.play("FadeIn")
 	mOpen = true
 	"""
 	var p = get_parent().GetPlayer()
@@ -40,17 +42,29 @@ func Open():
 
 func Close():
 	get_tree().paused = false
+	if mOpen:
+		$MenuView/AnimationPlayer.play("FadeOut")
 	mOpen = false
 	#mCamera.Restore()
 
 func _ready():
 	Open()
 	call_deferred("Open")
+	if Input.get_connected_joypads().empty():
+		$MenuView/Label.text = "Press Enter"
+	else:
+		$MenuView/Label.text = str("Press ", Input.get_joy_button_string(JOY_START))
 
 func _input(event):
-	if event.is_pressed() && event.is_action("menu"):
-		if mOpen:
-			Close()
-		else:
-			Open()
+	if event.is_pressed():
+		if event.is_action("menu"):
+			if mOpen:
+				Close()
+			else:
+				Open()
+		elif event.is_action("quit"):
+			if mOpen:
+				get_tree().quit()
+			else:
+				Open()
 
