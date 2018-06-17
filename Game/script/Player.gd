@@ -88,7 +88,7 @@ func GetTemperature():
 	return mTemperature
 
 func OnDamage(amount, push, origin):
-	if mMode == Mode.SUPER_ATTACK:
+	if mMode == Mode.SUPER_ATTACK || mMode == Mode.TELEPORT:
 		# We are immune here
 		return
 	if mMode == Mode.BLOCK:
@@ -103,6 +103,8 @@ func OnDamage(amount, push, origin):
 	mTemperature -= amount
 
 func OnFall(origin):
+	if mMode == Mode.TELEPORT:
+		return
 	Dead = true
 	translation = origin
 	# TODO: Play anim
@@ -173,9 +175,6 @@ func _OnAttack(a):
 		if a == 3:
 			dmg.tremor = .3
 		get_parent().add_child(dmg)
-
-func _ready():
-	Init(Vector3())
 
 func _physics_process(delta):
 	if Dead:

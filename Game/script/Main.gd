@@ -20,6 +20,10 @@
 
 extends Node
 
+const Player = preload("res://Player.tscn")
+const Enemy = preload("res://Enemy.tscn")
+
+
 func PlayerDied(pos):
 	$CamTarget.translation = pos
 	$CameraController.Target = $CamTarget
@@ -49,18 +53,57 @@ func OpenPortal(pos):
 
 func NextLevel():
 	print("Victory!")
-	# Just reload this scene, it ought to do for now.
-	get_tree().reload_current_scene()
+	# TODO: Add fade
+	_StartLevel()
+
+func _StartLevel():
+	# Make new level
+	var lvl = $Level
+	lvl.Init()
+	
+	# Add characters
+	var chars = $Characters
+	for i in chars.get_children():
+		chars.remove_child(i)
+	
+	var plr = Player.instance()
+	chars.AddCharacter(plr)
+	var possible = []
+	var ePossible = []
+	for i in range(lvl.Width * lvl.Height):
+		if lvl.Data[i] == 0:
+			possible.push_back(i)
+		if lvl.Data[i] != 1:
+			if ePossible.empty():
+				ePossible.push_back(i)
+			else:
+				var index = int(rand_range(0, possible.size()))
+				ePossible.push_back(ePossible[index])
+				ePossible[index] = i
+	if possible.empty():
+		# Quite unlikely
+		get_tree().quit()
+	var startCell = possible[int(rand_range(0, possible.size()))]
+	ePossible.remove(ePossible.rfind(startCell))
+	plr.Init(Vector3(startCell % lvl.Width, 0, int(startCell / lvl.Width)))
+	$CameraController.Target = plr
+	$CameraController.translation = plr.translation
+	
+	var numEnemies = min(int(rand_range(0, lvl.Width * lvl.Height * .5) + 2), ePossible.size() - 1)
+	for i in range(numEnemies):
+		var e = Enemy.instance()
+		chars.AddCharacter(e)
+		var cell = ePossible[i]
+		e.Init(Vector3(cell % lvl.Width, 0, int(cell / lvl.Width)))
+		e.Target = plr
+	
+	# Reset portal
+	var portal = $EndPortal
+	portal.hide()
+	portal.translation = Vector3(0, -100, 0)
 
 func _ready():
-	$CameraController.Target = $Characters/Player
+	rand_seed(OS.get_unix_time())
+	_StartLevel()
 	
-	var Enemy = load("res://Enemy.tscn")
-	var plr = $Characters/Player
-	var cont = $Characters
-	for i in range(1):
-		var e = Enemy.instance()
-		cont.AddCharacter(e)
-		e.Init(Vector3(rand_range(0, 10), 0, rand_range(0, 10)))
-		e.Target = plr
 

@@ -1,12 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://script/Main.gd" type="Script" id=1]
 [ext_resource path="res://script/Camera.gd" type="Script" id=2]
 [ext_resource path="res://script/CharacterManager.gd" type="Script" id=3]
-[ext_resource path="res://Player.tscn" type="PackedScene" id=4]
-[ext_resource path="res://script/Level.gd" type="Script" id=5]
-[ext_resource path="res://Tiles.tres" type="MeshLibrary" id=6]
-[ext_resource path="res://EndPortal.tscn" type="PackedScene" id=7]
+[ext_resource path="res://script/Level.gd" type="Script" id=4]
+[ext_resource path="res://Tiles.tres" type="MeshLibrary" id=5]
+[ext_resource path="res://EndPortal.tscn" type="PackedScene" id=6]
 
 [node name="Main" type="Node" index="0"]
 
@@ -41,11 +40,10 @@ _sections_unfolded = [ "Transform" ]
 
 script = ExtResource( 3 )
 
-[node name="Player" parent="Characters" index="0" instance=ExtResource( 4 )]
-
 [node name="Level" type="Node" parent="." index="2"]
 
-script = ExtResource( 5 )
+editor/display_folded = true
+script = ExtResource( 4 )
 
 [node name="Navigation" type="Navigation2D" parent="Level" index="0"]
 
@@ -53,7 +51,7 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="GridMap" type="GridMap" parent="Level" index="1"]
 
-theme = ExtResource( 6 )
+theme = ExtResource( 5 )
 cell_size = Vector3( 1, 1, 1 )
 cell_octant_size = 8
 cell_center_x = false
@@ -94,7 +92,7 @@ max_lines_visible = -1
 
 [node name="CamTarget" type="Spatial" parent="." index="4"]
 
-[node name="EndPortal" parent="." index="5" instance=ExtResource( 7 )]
+[node name="EndPortal" parent="." index="5" instance=ExtResource( 6 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0 )
 visible = false

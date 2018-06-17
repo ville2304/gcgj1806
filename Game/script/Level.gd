@@ -20,25 +20,30 @@
 
 extends Node
 
+const MeltingTile = preload("res://MeltingTile.tscn")
+
 onready var mGridMap = $GridMap
+onready var mMeltingTiles = $MeltingTiles
 onready var mNavigation = $Navigation
+
 
 var Width = 10
 var Height = 10
-var Data = [
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,1,1,1,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,
-	0,0,0,0,0,2,0,0,0,0,
-	0,0,0,0,0,2,0,0,0,0,
-	0,0,0,0,0,2,0,0,0,0,
-	0,0,0,0,0,2,0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0
-	]
+var Data
 
 func Init():
+	mGridMap.clear()
+	for i in mMeltingTiles.get_children():
+		mMeltingTiles.remove_child(i)
+	
+	# Very primitive level generator
+	Width = int(rand_range(20, 100))
+	Height = int(rand_range(20, 100))
+	Data = []
+	var table = [0, 0, 0, 2, 2, 2, 2, 1]
+	for i in range(Width * Height):
+		Data.push_back(table[int(floor(rand_range(0, table.size())))])
+	
 	"""
 	var vertices = PoolVector2Array()
 	vertices.append(Vector2(0, 0))
@@ -49,7 +54,6 @@ func Init():
 	navmesh.add_outline(vertices)
 	navmesh.make_polygons_from_outlines()
 	"""
-	var MeltingTile = load("res://MeltingTile.tscn")
 	
 	for y in range(Height):
 		for x in range(Width):
@@ -65,7 +69,7 @@ func Init():
 				mGridMap.set_cell_item(x, 0, y, 2)
 				var mt = MeltingTile.instance()
 				mt.translation = Vector3(x, 0, y)
-				$MeltingTiles.add_child(mt)
+				mMeltingTiles.add_child(mt)
 			else:
 				mGridMap.set_cell_item(x, 0, y, 0)
 				# Floor
@@ -79,6 +83,3 @@ func Init():
 func Navigate(from, to):
 	return []
 	return mNavigation.get_simple_path(from, to)
-
-func _ready():
-	Init()

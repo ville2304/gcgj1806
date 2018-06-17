@@ -127,8 +127,10 @@ func _OnAttack():
 	dmg.rotation = mObject.rotation
 	get_parent().add_child(dmg)
 
-func _physics_process(delta):
+func _process(delta):
 	_SearchTarget()
+
+func _physics_process(delta):
 	mSearchTime = max(0, mSearchTime - delta)
 	mTimer = max(0, mTimer - delta)
 	mAttackCooldown = max(0, mAttackCooldown - delta)
@@ -163,8 +165,7 @@ func _SearchTarget():
 		dvec = Vector2(dvec.x, dvec.z)
 		var angle = mObject.rotation.y
 		var facing = Vector2(-cos(angle), sin(angle))
-		if acos(clamp(dvec.normalized().dot(facing), -1, 1)) < HALF_FOV && translation.distance_squared_to(tt) <= VISION_SQ:
-			
+		if translation.distance_squared_to(tt) <= VISION_SQ && acos(clamp(dvec.normalized().dot(facing), -1, 1)) < HALF_FOV:
 			mRaycast.enabled = true
 			# TODO: Don't track centerpoint but random points within radius to see partial target
 			mRaycast.cast_to = tt - translation
