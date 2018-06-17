@@ -131,6 +131,9 @@ func _process(delta):
 	_SearchTarget()
 
 func _physics_process(delta):
+	# For some reason axis locks do not work properly
+	translation.y = 0
+	
 	mSearchTime = max(0, mSearchTime - delta)
 	mTimer = max(0, mTimer - delta)
 	mAttackCooldown = max(0, mAttackCooldown - delta)

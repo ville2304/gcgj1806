@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://script/Main.gd" type="Script" id=1]
 [ext_resource path="res://script/Camera.gd" type="Script" id=2]
@@ -6,17 +6,20 @@
 [ext_resource path="res://script/Level.gd" type="Script" id=4]
 [ext_resource path="res://Tiles.tres" type="MeshLibrary" id=5]
 [ext_resource path="res://EndPortal.tscn" type="PackedScene" id=6]
+[ext_resource path="res://script/Menu.gd" type="Script" id=7]
 
 [node name="Main" type="Node" index="0"]
 
 script = ExtResource( 1 )
+_sections_unfolded = [ "Pause" ]
 
 [node name="CameraController" type="Spatial" parent="." index="0" groups=[
 "Tremor",
 ]]
 
-editor/display_folded = true
+pause_mode = 2
 script = ExtResource( 2 )
+_sections_unfolded = [ "Pause" ]
 threshold = 1.0
 
 [node name="Camera" type="Camera" parent="CameraController" index="0"]
@@ -30,10 +33,15 @@ v_offset = 0.0
 doppler_tracking = 0
 projection = 0
 current = false
-fov = 20.0
+fov = 25.0
 size = 1.0
 near = 0.05
 far = 100.0
+_sections_unfolded = [ "Transform" ]
+
+[node name="CamOrigPos" type="Spatial" parent="CameraController" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 17, 15 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="Characters" type="Node" parent="." index="1"]
@@ -42,7 +50,6 @@ script = ExtResource( 3 )
 
 [node name="Level" type="Node" parent="." index="2"]
 
-editor/display_folded = true
 script = ExtResource( 4 )
 
 [node name="Navigation" type="Navigation2D" parent="Level" index="0"]
@@ -53,7 +60,7 @@ _sections_unfolded = [ "Transform" ]
 
 theme = ExtResource( 5 )
 cell_size = Vector3( 1, 1, 1 )
-cell_octant_size = 8
+cell_octant_size = 10
 cell_center_x = false
 cell_center_y = false
 cell_center_z = false
@@ -96,5 +103,18 @@ max_lines_visible = -1
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0 )
 visible = false
+
+[node name="Menu" type="Node" parent="." index="6"]
+
+pause_mode = 2
+script = ExtResource( 7 )
+_sections_unfolded = [ "Pause" ]
+
+[node name="TargetOrigin" type="Spatial" parent="Menu" index="0"]
+
+[node name="Target" type="Position3D" parent="Menu/TargetOrigin" index="0"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+_sections_unfolded = [ "Transform" ]
 
 

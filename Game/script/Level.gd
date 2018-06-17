@@ -37,12 +37,26 @@ func Init():
 		mMeltingTiles.remove_child(i)
 	
 	# Very primitive level generator
-	Width = int(rand_range(20, 100))
-	Height = int(rand_range(20, 100))
+	var MARGIN = 6
+	Width = int(rand_range(10, 40 - 2 * MARGIN) + 2 * MARGIN)
+	Height = int(rand_range(10, 40 - 2 * MARGIN) + 2 * MARGIN)
 	Data = []
-	var table = [0, 0, 0, 2, 2, 2, 2, 1]
+	var table = [0, 0, 0, 0, 2, 2, 2, 2, 2, 1]
 	for i in range(Width * Height):
 		Data.push_back(table[int(floor(rand_range(0, table.size())))])
+	for x in range(Width):
+		for y in range(MARGIN):
+			Data[x + Width * y] = 3
+			Data[x + Width * (Height - y - 1)] = 3
+		Data[x + Width * MARGIN] = 1
+		Data[x + Width * (Height - MARGIN - 1)] = 1
+	for y in range(Height):
+		for x in range(MARGIN):
+			Data[x + Width * y] = 3
+			Data[Width - 1 - x + Width * y] = 3
+		Data[MARGIN + Width * y] = 1
+		Data[Width - 1 - MARGIN + Width * y] = 1
+	
 	
 	"""
 	var vertices = PoolVector2Array()
@@ -70,6 +84,12 @@ func Init():
 				var mt = MeltingTile.instance()
 				mt.translation = Vector3(x, 0, y)
 				mMeltingTiles.add_child(mt)
+			elif tile == 3:
+				# Margin tile
+				if randf() < .6:
+					mGridMap.set_cell_item(x, 0, y, 0)
+				else:
+					mGridMap.set_cell_item(x, 0, y, 1)
 			else:
 				mGridMap.set_cell_item(x, 0, y, 0)
 				# Floor

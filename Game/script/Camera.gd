@@ -29,13 +29,16 @@ export(float, 0, 5) var threshold = 2.0
 var Target = null
 
 onready var mCam = $Camera
-onready var mCamPos = mCam.translation
+onready var mCamOrigPos = $CamOrigPos
 
 var mShake
 var mShakeLength = 0
 var mShakeTime = 0
 var mShakeIntensity = 0
-
+var mTransOverride = null
+var mTransStart
+var mTransLength = 0
+var mTransProgress = 0
 
 func Tremor(at, strength):
 	if strength < .1:
@@ -49,7 +52,30 @@ func Tremor(at, strength):
 	mShakeTime = 0
 	mShakeIntensity = intensity
 
+func Goto(targetTransform, length):
+	mTransLength = abs(length)
+	mTransProgress = 0
+	mTransStart = mCam.global_transform
+	mTransOverride = targetTransform
+
+func Restore():
+	if mTransOverride == null:
+		return
+	mTransLength = -0.5
+	mTransProgress = 0
+	mTransStart = mCam.global_transform
+	mTransOverride = mCamOrigPos.global_transform
+
 func _process(delta):
+	if mTransOverride != null:
+		mTransProgress+= delta
+		var val = abs(mTransProgress / mTransLength)
+		mCam.global_transform.origin = mTransStart.origin.linear_interpolate(mTransOverride.origin, val)
+		# Restore
+		if val >= 1 && mTransLength < 0:
+			mTransOverride = null
+		return
+	
 	var diff = translation
 	if Target != null:
 		diff -= Target.global_transform.origin
@@ -64,7 +90,7 @@ func _process(delta):
 		offset.x = axis.x
 		offset.z = axis.y
 		offset *= MAX_OFFSET
-	offset += mCamPos.normalized() * offset.length()
+	offset += mCamOrigPos.transform.origin.normalized() * offset.length()
 	
 	# Camera shake
 	if mShakeTime < mShakeLength:
@@ -74,7 +100,7 @@ func _process(delta):
 		mShake *= lerp(mShakeIntensity, 0, mShakeTime / mShakeLength)
 		offset += mShake
 	
-	mCam.translation = mCamPos + offset
+	mCam.translation = mCamOrigPos.transform.origin + offset
 
 
 

@@ -23,8 +23,11 @@ extends Node
 const Player = preload("res://Player.tscn")
 const Enemy = preload("res://Enemy.tscn")
 
+var mPlayer = null
+
 
 func PlayerDied(pos):
+	mPlayer = null
 	$CamTarget.translation = pos
 	$CameraController.Target = $CamTarget
 	print("Game over!")
@@ -56,6 +59,9 @@ func NextLevel():
 	# TODO: Add fade
 	_StartLevel()
 
+func GetPlayer():
+	return mPlayer
+
 func _StartLevel():
 	# Make new level
 	var lvl = $Level
@@ -73,7 +79,7 @@ func _StartLevel():
 	for i in range(lvl.Width * lvl.Height):
 		if lvl.Data[i] == 0:
 			possible.push_back(i)
-		if lvl.Data[i] != 1:
+		if lvl.Data[i] != 1 && lvl.Data[i] != 3:
 			if ePossible.empty():
 				ePossible.push_back(i)
 			else:
@@ -86,10 +92,11 @@ func _StartLevel():
 	var startCell = possible[int(rand_range(0, possible.size()))]
 	ePossible.remove(ePossible.rfind(startCell))
 	plr.Init(Vector3(startCell % lvl.Width, 0, int(startCell / lvl.Width)))
+	mPlayer = plr
 	$CameraController.Target = plr
 	$CameraController.translation = plr.translation
 	
-	var numEnemies = min(int(rand_range(0, lvl.Width * lvl.Height * .5) + 2), ePossible.size() - 1)
+	var numEnemies = min(int(sqrt(lvl.Width * lvl.Height) + 2), ePossible.size() - 1)
 	for i in range(numEnemies):
 		var e = Enemy.instance()
 		chars.AddCharacter(e)
@@ -103,7 +110,5 @@ func _StartLevel():
 	portal.translation = Vector3(0, -100, 0)
 
 func _ready():
-	rand_seed(OS.get_unix_time())
+	randomize()
 	_StartLevel()
-	
-

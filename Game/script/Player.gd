@@ -177,6 +177,8 @@ func _OnAttack(a):
 		get_parent().add_child(dmg)
 
 func _physics_process(delta):
+	# For some reason axis locks do not work properly
+	translation.y = 0
 	if Dead:
 		return
 	mDashCooldown = max(0, mDashCooldown - delta)

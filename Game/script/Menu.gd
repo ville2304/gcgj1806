@@ -18,37 +18,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-extends Area
+extends Node
 
-var mBodies
-var mCondition
-var mHeat
+var mOpen = false
+onready var mCamera = get_node("../CameraController")
+onready var mTargetOrigin = $TargetOrigin
+onready var mTarget = $TargetOrigin/Target
+
+
+func Open():
+	get_tree().paused = true
+	mOpen = true
+	"""
+	var p = get_parent().GetPlayer()
+	if p != null:
+		mTargetOrigin.translation = p.translation
+		mTargetOrigin.translation = Vector3()
+		mTargetOrigin.translation.y = 2.0
+		mCamera.Goto(mTarget.global_transform, 1.0)
+	"""
+
+func Close():
+	get_tree().paused = false
+	mOpen = false
+	#mCamera.Restore()
 
 func _ready():
-	mBodies = 0
-	mHeat = 0.0
-	mCondition = 5.0
+	Open()
+	call_deferred("Open")
 
-func _process(delta):
-	var ob = get_overlapping_bodies()
-	var oblen = ob.size()
-	for i in ob:
-		if mCondition <= 0:
-			if !i.Dead:
-				i.OnFall(translation)
-		elif i.get_collision_layer_bit(12):
-			if i.has_method("GetTemperature"):
-				mHeat += delta * i.GetTemperature() / 20.0
-			else:
-				mHeat += delta
-	if mHeat > .1:
-		var value = min(mHeat, mHeat * delta * .5)
-		mHeat-= value
-		mCondition-= value
-	else:
-		mCondition+= delta
-	mCondition = clamp(mCondition, -8.0, 5.0)
-	if mCondition <= 0 && oblen > 0:
-		mCondition = -8.0
-	var s = clamp(mCondition, 0, 5) / 5.0
-	$MeshInstance.scale = Vector3(s, 1, s)
+func _input(event):
+	if event.is_pressed() && event.is_action("menu"):
+		if mOpen:
+			Close()
+		else:
+			Open()
+
