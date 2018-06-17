@@ -25,7 +25,7 @@ const EnemyAttackDamage = preload("res://EnemyAttackDamage.tscn")
 const ZERO_ANGLE = Vector2(-1, 0)
 const WALKING_SPEED = 3.0 # Slightly lower than players'
 const VISION_SQ = 5.0 * 5.0
-const HALF_FOV = PI * .4
+const HALF_FOV = PI * .5
 const MAX_SEARCH_TIME = 5.0
 const MAX_DISTANCE_FROM_HOME_SQ = 3.0 * 3.0
 const ATTACK_RANGE_SQ = 1.5 * 1.5
@@ -251,15 +251,7 @@ func _Loiter():
 			return
 		mDestination = mHome + Vector3(rand_range(-1, 1), 0, rand_range(-1, 1)).normalized() * sqrt(MAX_DISTANCE_FROM_HOME_SQ)
 		mDestination = mDestination.round()
-		# FIXME: Gaah!
-		var lvl = get_node("/root/Main/Level")
-		if mDestination.x < 0 || mDestination.x >= lvl.Width || mDestination.y < 0 || mDestination.y >= lvl.Height:
-			mDestination = null
-			return
-		var tile = lvl.Data[mDestination.x + mDestination.y * lvl.Width]
-		if tile != 0 && tile != 2:
-			mDestination = null
-			return
+		# FIXME: Check that destination tile is free
 		if mMode != Mode.WALK:
 			# TODO: play anim
 			print("enemy anim walk 2")
