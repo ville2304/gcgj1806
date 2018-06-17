@@ -121,7 +121,7 @@ func _physics_process(delta):
 	
 	if mMode == Mode.ALERT || mMode == Mode.DAMAGE || mMode == Mode.ATTACK:
 		return
-	
+		
 	if mEngaged:
 		_Engage()
 	else:
@@ -211,6 +211,7 @@ func _Disengage(search):
 	else:
 		mSearchTime = 0.0
 	mMode = Mode.IDLE
+
 
 func _Loiter():
 	# If too far from home, return there

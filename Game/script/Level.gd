@@ -20,13 +20,47 @@
 
 extends Node
 
-func _ready():
-	var Enemy = load("res://Enemy.tscn")
-	var plr = $Characters/Player
-	var cont = $Characters
-	for i in range(5):
-		var e = Enemy.instance()
-		cont.add_child(e)
-		e.Init(Vector3(rand_range(0, 10), 0, rand_range(0, 10)))
-		e.Target = plr
+onready var mNavigation = $Navigation
 
+func Init():
+	var width = 10
+	var height = 10
+	var data = [
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,1,1,1,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0
+	]
+	var Wall = load("res://Wall.tscn")
+	
+	# FIXME: This could be greatly optimized
+	var vertices = PoolVector2Array()
+	vertices.append(Vector2(0, 0))
+	vertices.append(Vector2(1, 0))
+	vertices.append(Vector2(1, 1))
+	vertices.append(Vector2(0, 1))
+	var navmesh = NavigationPolygon.new()
+	navmesh.add_outline(vertices)
+	navmesh.make_polygons_from_outlines()
+	for y in range(height):
+		for x in range(width):
+			if data[x + y * width] == 1:
+				var w = Wall.instance()
+				w.translation = Vector3(x, 0, y)
+				add_child(w)
+			else:
+				var trans = Transform2D()
+				trans.origin = Vector2(x, y)
+				mNavigation.navpoly_add(navmesh, trans)
+
+func Navigate(from, to):
+	return mNavigation.get_simple_path(from, to)
+
+func _ready():
+	Init()

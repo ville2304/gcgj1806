@@ -20,13 +20,16 @@
 
 extends Node
 
-func _ready():
-	var Enemy = load("res://Enemy.tscn")
-	var plr = $Characters/Player
-	var cont = $Characters
-	for i in range(5):
-		var e = Enemy.instance()
-		cont.add_child(e)
-		e.Init(Vector3(rand_range(0, 10), 0, rand_range(0, 10)))
-		e.Target = plr
+onready var mLevel = get_node("../Level")
 
+
+func Navigate(from, to):
+	mLevel.Navigate(Vector2(from.x, from.z), Vector2(to.x, to.z))
+
+# TODO: Implement me
+func AddCharacter(c):
+	pass
+
+# TODO: Implement me
+func DestroyCharacter(c):
+	pass

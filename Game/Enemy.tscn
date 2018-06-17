@@ -2,11 +2,11 @@
 
 [ext_resource path="res://script/Enemy.gd" type="Script" id=1]
 
-[sub_resource type="SphereShape" id=2]
+[sub_resource type="SphereShape" id=1]
 
 radius = 0.5
 
-[sub_resource type="SphereMesh" id=3]
+[sub_resource type="SphereMesh" id=2]
 
 custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
 radius = 0.5
@@ -15,7 +15,7 @@ radial_segments = 64
 rings = 32
 is_hemisphere = false
 
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="SpatialMaterial" id=3]
 
 render_priority = 0
 flags_transparent = false
@@ -67,15 +67,15 @@ proximity_fade_enable = false
 distance_fade_enable = false
 _sections_unfolded = [ "Albedo" ]
 
-[sub_resource type="PlaneMesh" id=6]
+[sub_resource type="PlaneMesh" id=4]
 
-material = SubResource( 5 )
+material = SubResource( 3 )
 custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
 size = Vector2( 0.3, 0.3 )
 subdivide_width = 0
 subdivide_depth = 0
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=5]
 
 resource_name = "Attack"
 length = 0.3
@@ -108,7 +108,7 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 
 resource_name = "Damage"
 length = 0.2
@@ -127,9 +127,8 @@ tracks/0/keys = {
 "values": [ Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 ), Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.400758, 0 ), Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 ) ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=7]
 
-resource_name = "Engage"
 length = 0.4
 loop = false
 step = 0.1
@@ -164,7 +163,7 @@ _sections_unfolded = [ "Collision" ]
 
 [node name="CollisionShape" type="CollisionShape" parent="." index="0"]
 
-shape = SubResource( 2 )
+shape = SubResource( 1 )
 disabled = false
 
 [node name="RayCast" type="RayCast" parent="." index="1"]
@@ -188,7 +187,7 @@ lod_min_distance = 0.0
 lod_min_hysteresis = 0.0
 lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
-mesh = SubResource( 3 )
+mesh = SubResource( 2 )
 skeleton = NodePath("..")
 material/0 = null
 _sections_unfolded = [ "Transform" ]
@@ -205,7 +204,7 @@ lod_min_distance = 0.0
 lod_min_hysteresis = 0.0
 lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
-mesh = SubResource( 6 )
+mesh = SubResource( 4 )
 skeleton = NodePath("..")
 material/0 = null
 
@@ -216,9 +215,9 @@ autoplay = ""
 playback_process_mode = 1
 playback_default_blend_time = 0.0
 playback_speed = 1.0
-anims/Attack = SubResource( 8 )
-anims/Damage = SubResource( 7 )
-anims/Engage = SubResource( 4 )
+anims/Attack = SubResource( 5 )
+anims/Damage = SubResource( 6 )
+anims/Engage = SubResource( 7 )
 blend_times = [  ]
 
 [connection signal="animation_finished" from="Spatial/AnimationPlayer" to="." method="_OnAnimationFinished"]
