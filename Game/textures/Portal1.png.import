@@ -2,17 +2,16 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/Portal1.png-a70e1eed753ca33a2a25a7d89d941243.s3tc.stex"
-path.etc2="res://.import/Portal1.png-a70e1eed753ca33a2a25a7d89d941243.etc2.stex"
+path="res://.import/Portal1.png-a70e1eed753ca33a2a25a7d89d941243.stex"
 
 [deps]
 
 source_file="res://textures/Portal1.png"
-dest_files=[ "res://.import/Portal1.png-a70e1eed753ca33a2a25a7d89d941243.s3tc.stex", "res://.import/Portal1.png-a70e1eed753ca33a2a25a7d89d941243.etc2.stex" ]
+dest_files=[ "res://.import/Portal1.png-a70e1eed753ca33a2a25a7d89d941243.stex" ]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/normal_map=0

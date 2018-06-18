@@ -2,17 +2,16 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/IceGolemD1.png-48bdff8c7897176dbe1ed93eaedceaa6.s3tc.stex"
-path.etc2="res://.import/IceGolemD1.png-48bdff8c7897176dbe1ed93eaedceaa6.etc2.stex"
+path="res://.import/IceGolemD1.png-48bdff8c7897176dbe1ed93eaedceaa6.stex"
 
 [deps]
 
 source_file="res://textures/IceGolemD1.png"
-dest_files=[ "res://.import/IceGolemD1.png-48bdff8c7897176dbe1ed93eaedceaa6.s3tc.stex", "res://.import/IceGolemD1.png-48bdff8c7897176dbe1ed93eaedceaa6.etc2.stex" ]
+dest_files=[ "res://.import/IceGolemD1.png-48bdff8c7897176dbe1ed93eaedceaa6.stex" ]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/normal_map=0

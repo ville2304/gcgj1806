@@ -2,17 +2,16 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/Tiles.png-183116b712949f256d03e83428f2a45b.s3tc.stex"
-path.etc2="res://.import/Tiles.png-183116b712949f256d03e83428f2a45b.etc2.stex"
+path="res://.import/Tiles.png-183116b712949f256d03e83428f2a45b.stex"
 
 [deps]
 
 source_file="res://textures/Tiles.png"
-dest_files=[ "res://.import/Tiles.png-183116b712949f256d03e83428f2a45b.s3tc.stex", "res://.import/Tiles.png-183116b712949f256d03e83428f2a45b.etc2.stex" ]
+dest_files=[ "res://.import/Tiles.png-183116b712949f256d03e83428f2a45b.stex" ]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/normal_map=0
