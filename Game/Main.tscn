@@ -216,7 +216,6 @@ visible = false
 [node name="Fade" type="ColorRect" parent="." index="6"]
 
 pause_mode = 2
-editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
@@ -244,6 +243,7 @@ blend_times = [  ]
 [node name="Menu" type="Node" parent="." index="7"]
 
 pause_mode = 2
+editor/display_folded = true
 script = ExtResource( 6 )
 _sections_unfolded = [ "Pause" ]
 

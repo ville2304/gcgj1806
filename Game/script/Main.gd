@@ -79,6 +79,7 @@ func _StartLevel(none = null):
 	
 	# Add characters
 	var chars = $Characters
+	chars.mCharacters = 0
 	for i in chars.get_children():
 		chars.remove_child(i)
 	
@@ -107,7 +108,7 @@ func _StartLevel(none = null):
 	$CameraController.translation = plr.translation
 	
 	var numEnemies = min(int(sqrt(lvl.Width * lvl.Height) + 2), ePossible.size() - 1)
-	numEnemies = 1
+	#numEnemies = 1
 	for i in range(numEnemies):
 		var e = Enemy.instance()
 		chars.AddCharacter(e)

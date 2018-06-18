@@ -22,14 +22,17 @@ extends Node
 
 onready var mLevel = get_node("../Level")
 
+var mCharacters = 0
 
 func Navigate(from, to):
 	mLevel.Navigate(Vector2(from.x, from.z), Vector2(to.x, to.z))
 
 func AddCharacter(c):
+	mCharacters+= 1
 	add_child(c)
 
 func DestroyCharacter(c, anim = null):
+	mCharacters-= 1
 	# FIXME: No time to figure out better way.
 	if anim != null:
 		var src = c.get_node("Spatial")
@@ -43,7 +46,7 @@ func DestroyCharacter(c, anim = null):
 	if c.name == "Player":
 		get_parent().PlayerDied(c.translation)
 	else:
-		if get_child_count() == 1:
+		if mCharacters == 1:
 			get_parent().OpenPortal(get_child(0).translation)
 
 func PlayerTeleport():
