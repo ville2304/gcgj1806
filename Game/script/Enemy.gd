@@ -92,17 +92,13 @@ func Init(pos):
 	mObject.rotation.y = rand_range(0, 2 * PI)
 	mMaterial = load("res://models/IceGolem.material")
 	$Spatial/Char/IceGolemRig/Skeleton/IceGolem.material_override = mMaterial
+	
+	mAnimationPlayer.connect("animation_finished", self, "_OnAnimationFinished")
 
 func OnDamage(amount, push, origin):
 	if Dead:
 		return
 	mHP -= amount
-	if mHP <= 0:
-		get_parent().DestroyCharacter(self, "Die")
-		Dead = true
-		#mAnimationPlayer.play("Die")
-		mMode = Mode.DEATH
-		return
 	if !mMode in [Mode.IDLE, Mode.WALK]:
 		return
 	mAnimationPlayer.play("Damage")
@@ -136,7 +132,12 @@ func _OnAttack():
 	get_parent().add_child(dmg)
 
 func _process(delta):
-	mMaterial.albedo_texture = TEXTURES[int((mHP / mMaxHP) * TEXTURES.size()-1)]
+	if !Dead && mHP <= 0:
+		Dead = true
+		mAnimationPlayer.play("Die")
+		mMode = Mode.DEATH
+		return
+	mMaterial.albedo_texture = TEXTURES[clamp(int((mHP / mMaxHP) * TEXTURES.size()-1), 0, TEXTURES.size()-1)]
 	_SearchTarget()
 
 func _physics_process(delta):

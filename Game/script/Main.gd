@@ -79,7 +79,6 @@ func _StartLevel(none = null):
 	
 	# Add characters
 	var chars = $Characters
-	chars.mCharacters = 0
 	for i in chars.get_children():
 		chars.remove_child(i)
 	
