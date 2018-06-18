@@ -111,6 +111,8 @@ func OnFall(origin):
 	Dead = true
 	translation = origin
 	mAnimationPlayer.play("Fall")
+	set_process(false)
+	set_physics_process(false)
 	mMode = Mode.FALL
 
 func _OnAnimationFinished(animName):
@@ -136,6 +138,8 @@ func _process(delta):
 		Dead = true
 		mAnimationPlayer.play("Die")
 		mMode = Mode.DEATH
+		set_process(false)
+		set_physics_process(false)
 		return
 	mMaterial.albedo_texture = TEXTURES[clamp(int((mHP / mMaxHP) * TEXTURES.size()-1), 0, TEXTURES.size()-1)]
 	_SearchTarget()
