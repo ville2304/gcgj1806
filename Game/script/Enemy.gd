@@ -21,6 +21,14 @@
 extends KinematicBody
 
 const EnemyAttackDamage = preload("res://EnemyAttackDamage.tscn")
+const TEXTURES = [
+	preload("res://textures/IceGolemD3.png"),
+	preload("res://textures/IceGolemD3.png"),
+	preload("res://textures/IceGolemD2.png"),
+	preload("res://textures/IceGolemD1.png"),
+	preload("res://textures/IceGolem.png")
+]
+
 
 const ZERO_ANGLE = Vector2(-1, 0)
 const WALKING_SPEED = 3.0 # Slightly lower than players'
@@ -58,10 +66,11 @@ var mMode
 var mHP
 var mMaxHP
 var mDestination
+var mMaterial
 
 onready var mRaycast = $RayCast
 onready var mObject = $Spatial
-onready var mAnimationPlayer = $Spatial/AnimationPlayer
+onready var mAnimationPlayer = $Spatial/Char/AnimationPlayer
 
 
 func Init(pos):
@@ -81,14 +90,17 @@ func Init(pos):
 	mDestination = null
 	
 	mObject.rotation.y = rand_range(0, 2 * PI)
+	mMaterial = load("res://models/IceGolem.material")
+	$Spatial/Char/IceGolemRig/Skeleton/IceGolem.material_override = mMaterial
 
 func OnDamage(amount, push, origin):
+	if Dead:
+		return
 	mHP -= amount
 	if mHP <= 0:
+		get_parent().DestroyCharacter(self, "Die")
 		Dead = true
-		# TODO: Play anim
-		print("enemy anim death")
-		mAnimationPlayer.play("Damage")
+		#mAnimationPlayer.play("Die")
 		mMode = Mode.DEATH
 		return
 	if !mMode in [Mode.IDLE, Mode.WALK]:
@@ -102,9 +114,7 @@ func OnDamage(amount, push, origin):
 func OnFall(origin):
 	Dead = true
 	translation = origin
-	# TODO: Play anim
-	print("enemy anim fall")
-	mAnimationPlayer.play("Damage")
+	mAnimationPlayer.play("Fall")
 	mMode = Mode.FALL
 
 func _OnAnimationFinished(animName):
@@ -112,13 +122,11 @@ func _OnAnimationFinished(animName):
 		get_parent().DestroyCharacter(self)
 		return
 	if mMode in [Mode.ALERT, Mode.DAMAGE]:
-		# TODO: play anim
-		print("enemy anim idle")
+		mAnimationPlayer.play("Idle-loop")
 		mMode = Mode.IDLE
 	if mMode == Mode.ATTACK:
 		mAttackCooldown = ATTACK_COOLDOWN
-		# TODO: play anim
-		print("enemy anim idle")
+		mAnimationPlayer.play("Idle-loop")
 		mMode = Mode.IDLE
 
 func _OnAttack():
@@ -128,6 +136,7 @@ func _OnAttack():
 	get_parent().add_child(dmg)
 
 func _process(delta):
+	mMaterial.albedo_texture = TEXTURES[int((mHP / mMaxHP) * TEXTURES.size()-1)]
 	_SearchTarget()
 
 func _physics_process(delta):
@@ -148,8 +157,7 @@ func _physics_process(delta):
 		if mSearchTime > 0:
 			# Just idle and turn around
 			if mMode != Mode.IDLE:
-				# TODO: play anim
-				print("enemy anim idle")
+				mAnimationPlayer.play("Idle-loop")
 				mMode = Mode.IDLE
 				mTimer = rand_range(0, 1)
 			if mTimer <= 0:
@@ -177,14 +185,13 @@ func _SearchTarget():
 					mEngaged = true
 					if mSearchTime <= 0:
 						mObject.rotation.y = dvec.angle_to(ZERO_ANGLE)
-						mAnimationPlayer.play("Engage")
+						mAnimationPlayer.play("Alarm")
 						mMode = Mode.ALERT
 			else:
 				if mEngaged:
 					_Disengage(true)
 		else:
 			if mEngaged:
-				print("here2")
 				_Disengage(true)
 
 func _Engage():
@@ -206,24 +213,25 @@ func _Engage():
 	# Attack if in range
 	if translation.distance_squared_to(mDestination) < ATTACK_RANGE_SQ:
 		if mAttackCooldown <= 0 && mMode == Mode.IDLE:
+			# As we can't add stuff to imported animations, this will have to do.
+			var t = $Spatial/Tween
+			t.interpolate_callback(self, 0.5, "_OnAttack")
+			t.start()
 			mAnimationPlayer.play("Attack")
 			mMode = Mode.ATTACK
 		elif mMode == Mode.WALK:
-			# TODO: play anim
-			print("enemy anim idle")
+			mAnimationPlayer.play("Idle-loop")
 			mMode = Mode.IDLE
 	else:
 		# Move into range
 		if mMode != Mode.WALK:
-			# TODO: play anim
-			print("enemy anim walk 1")
+			mAnimationPlayer.play("Walk-loop")
 			mMode = Mode.WALK
 		move_and_slide(mvec)
 
 func _Disengage(search):
 	mEngaged = false
-	# TODO: play anim
-	print("enemy anim idle")
+	mAnimationPlayer.play("Idle-loop")
 	mMode = Mode.IDLE
 	if search:
 		mSearchTime = rand_range(MAX_SEARCH_TIME * .2, MAX_SEARCH_TIME)
@@ -245,16 +253,14 @@ func _Loiter():
 			# Idle
 			mTimer = rand_range(0.5, 2)
 			if mMode != Mode.IDLE:
-				# TODO: play anim
-				print("enemy anim idle")
+				mAnimationPlayer.play("Idle-loop")
 				mMode = Mode.IDLE
 			return
 		mDestination = mHome + Vector3(rand_range(-1, 1), 0, rand_range(-1, 1)).normalized() * sqrt(MAX_DISTANCE_FROM_HOME_SQ)
 		mDestination = mDestination.round()
 		# FIXME: Check that destination tile is free
 		if mMode != Mode.WALK:
-			# TODO: play anim
-			print("enemy anim walk 2")
+			mAnimationPlayer.play("Walk-loop")
 			mMode = Mode.WALK
 	# Go to destination
 	if translation.distance_squared_to(mDestination) < .5:

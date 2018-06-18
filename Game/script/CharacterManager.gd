@@ -29,7 +29,16 @@ func Navigate(from, to):
 func AddCharacter(c):
 	add_child(c)
 
-func DestroyCharacter(c):
+func DestroyCharacter(c, anim = null):
+	# FIXME: No time to figure out better way.
+	if anim != null:
+		var src = c.get_node("Spatial")
+		c.remove_child(src)
+		add_child(src)
+		src.owner = self
+		src.transform = c.transform
+		src.get_node("Char/AnimationPlayer").play(anim)
+	
 	remove_child(c)
 	if c.name == "Player":
 		get_parent().PlayerDied(c.translation)

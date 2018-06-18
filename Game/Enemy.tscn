@@ -176,9 +176,10 @@ collision_mask = 1
 
 [node name="Spatial" type="Spatial" parent="." index="2"]
 
-[node name="Ho" parent="Spatial" index="0" instance=ExtResource( 2 )]
+[node name="Char" parent="Spatial" index="0" instance=ExtResource( 2 )]
 
-transform = Transform( -1.03726e-08, 0, -0.237296, 0, 0.237296, 0, 0.237296, 0, -1.03726e-08, 0, 0, 0 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
+_sections_unfolded = [ "Transform" ]
 
 [node name="MeshInstance" type="MeshInstance" parent="Spatial" index="1"]
 
@@ -225,6 +226,15 @@ anims/Attack = SubResource( 5 )
 anims/Damage = SubResource( 6 )
 anims/Engage = SubResource( 7 )
 blend_times = [  ]
+
+[node name="Tween" type="Tween" parent="Spatial" index="3"]
+
+repeat = false
+playback_process_mode = 1
+playback_speed = 1.0
+playback/active = false
+playback/repeat = false
+playback/speed = 1.0
 
 [connection signal="animation_finished" from="Spatial/AnimationPlayer" to="." method="_OnAnimationFinished"]
 
