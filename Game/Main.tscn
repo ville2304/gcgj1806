@@ -1,18 +1,17 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://script/Main.gd" type="Script" id=1]
 [ext_resource path="res://script/Camera.gd" type="Script" id=2]
 [ext_resource path="res://script/CharacterManager.gd" type="Script" id=3]
 [ext_resource path="res://script/Level.gd" type="Script" id=4]
-[ext_resource path="res://Tiles.tres" type="MeshLibrary" id=5]
-[ext_resource path="res://EndPortal.tscn" type="PackedScene" id=6]
-[ext_resource path="res://script/Menu.gd" type="Script" id=7]
-[ext_resource path="res://textures/screentone3.png" type="Texture" id=8]
-[ext_resource path="res://textures/menubg.png" type="Texture" id=9]
-[ext_resource path="res://textures/title.png" type="Texture" id=10]
-[ext_resource path="res://nmf.png" type="Texture" id=11]
+[ext_resource path="res://EndPortal.tscn" type="PackedScene" id=5]
+[ext_resource path="res://script/Menu.gd" type="Script" id=6]
+[ext_resource path="res://textures/screentone3.png" type="Texture" id=7]
+[ext_resource path="res://textures/menubg.png" type="Texture" id=8]
+[ext_resource path="res://textures/title.png" type="Texture" id=9]
+[ext_resource path="res://nmf.png" type="Texture" id=10]
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=1]
 
 resource_name = "FadeIn"
 length = 0.6
@@ -43,7 +42,7 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=2]
 
 resource_name = "FadeOut"
 length = 0.3
@@ -105,9 +104,8 @@ tracks/1/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=4]
 
-resource_name = "FadeOut"
 length = 0.3
 loop = false
 step = 0.1
@@ -161,7 +159,7 @@ v_offset = 0.0
 doppler_tracking = 0
 projection = 0
 current = false
-fov = 25.0
+fov = 20.0
 size = 1.0
 near = 0.05
 far = 100.0
@@ -184,26 +182,9 @@ script = ExtResource( 4 )
 
 _sections_unfolded = [ "Transform" ]
 
-[node name="GridMap" type="GridMap" parent="Level" index="1"]
+[node name="MeltingTiles" type="Node" parent="Level" index="1"]
 
-theme = ExtResource( 5 )
-cell_size = Vector3( 1, 1, 1 )
-cell_octant_size = 10
-cell_center_x = false
-cell_center_y = false
-cell_center_z = false
-cell_scale = 1.0
-collision_layer = 1
-collision_mask = 1
-data = {
-"cells": PoolIntArray(  )
-}
-_sections_unfolded = [ "Cell" ]
-__meta__ = {
-"_editor_clip_": 0
-}
-
-[node name="MeltingTiles" type="Node" parent="Level" index="2"]
+[node name="Tiles" type="Node" parent="Level" index="2"]
 
 [node name="Label" type="Label" parent="." index="3"]
 
@@ -227,7 +208,7 @@ max_lines_visible = -1
 
 [node name="CamTarget" type="Spatial" parent="." index="4"]
 
-[node name="EndPortal" parent="." index="5" instance=ExtResource( 6 )]
+[node name="EndPortal" parent="." index="5" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0 )
 visible = false
@@ -256,14 +237,14 @@ autoplay = ""
 playback_process_mode = 1
 playback_default_blend_time = 0.0
 playback_speed = 1.0
-anims/FadeIn = SubResource( 4 )
-anims/FadeOut = SubResource( 5 )
+anims/FadeIn = SubResource( 1 )
+anims/FadeOut = SubResource( 2 )
 blend_times = [  ]
 
 [node name="Menu" type="Node" parent="." index="7"]
 
 pause_mode = 2
-script = ExtResource( 7 )
+script = ExtResource( 6 )
 _sections_unfolded = [ "Pause" ]
 
 [node name="TargetOrigin" type="Spatial" parent="Menu" index="0"]
@@ -302,7 +283,7 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 8 )
+texture = ExtResource( 7 )
 stretch_mode = 2
 _sections_unfolded = [ "Material", "Visibility" ]
 
@@ -318,8 +299,9 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 9 )
+texture = ExtResource( 8 )
 expand = true
+stretch_mode = 0
 _sections_unfolded = [ "Material", "Visibility" ]
 
 [node name="Title" type="TextureRect" parent="Menu/MenuView" index="2"]
@@ -338,7 +320,7 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 10 )
+texture = ExtResource( 9 )
 stretch_mode = 0
 
 [node name="Copy" type="TextureRect" parent="Menu/MenuView" index="3"]
@@ -357,7 +339,7 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 11 )
+texture = ExtResource( 10 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="Menu/MenuView" index="4"]
@@ -388,7 +370,34 @@ playback_process_mode = 1
 playback_default_blend_time = 0.0
 playback_speed = 1.0
 anims/FadeIn = SubResource( 3 )
-anims/FadeOut = SubResource( 2 )
+anims/FadeOut = SubResource( 4 )
 blend_times = [  ]
+
+[node name="DirectionalLight" type="DirectionalLight" parent="." index="8"]
+
+transform = Transform( 0.893329, 0.22052, 0.39158, -0.449404, 0.438352, 0.778385, 0, -0.871331, 0.490695, 0, 0, 9.92279 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 1.0
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.1
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.1
+directional_shadow_split_2 = 0.2
+directional_shadow_split_3 = 0.5
+directional_shadow_blend_splits = false
+directional_shadow_normal_bias = 0.8
+directional_shadow_bias_split_scale = 0.25
+directional_shadow_depth_range = 0
+directional_shadow_max_distance = 200.0
 
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://script/Enemy.gd" type="Script" id=1]
+[ext_resource path="res://models/IceGolem.dae" type="PackedScene" id=2]
 
 [sub_resource type="SphereShape" id=1]
 
@@ -175,9 +176,14 @@ collision_mask = 1
 
 [node name="Spatial" type="Spatial" parent="." index="2"]
 
-[node name="MeshInstance" type="MeshInstance" parent="Spatial" index="0"]
+[node name="Ho" parent="Spatial" index="0" instance=ExtResource( 2 )]
+
+transform = Transform( -1.03726e-08, 0, -0.237296, 0, 0.237296, 0, 0.237296, 0, -1.03726e-08, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Spatial" index="1"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.400758, 0 )
+visible = false
 layers = 1
 material_override = null
 cast_shadow = 1
@@ -208,7 +214,7 @@ mesh = SubResource( 4 )
 skeleton = NodePath("..")
 material/0 = null
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Spatial" index="1"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Spatial" index="2"]
 
 root_node = NodePath("..")
 autoplay = ""

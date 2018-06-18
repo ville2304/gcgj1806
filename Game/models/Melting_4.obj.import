@@ -1,0 +1,17 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/Melting_4.obj-a085c66736a7ac6ee2816f986578b7bf.mesh"
+
+[deps]
+
+files=[ "res://.import/Melting_4.obj-a085c66736a7ac6ee2816f986578b7bf.mesh" ]
+
+source_file="res://models/Melting_4.obj"
+dest_files=[ "res://.import/Melting_4.obj-a085c66736a7ac6ee2816f986578b7bf.mesh", "res://.import/Melting_4.obj-a085c66736a7ac6ee2816f986578b7bf.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )

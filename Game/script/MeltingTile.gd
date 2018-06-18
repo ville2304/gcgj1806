@@ -20,6 +20,15 @@
 
 extends Area
 
+const FRAMES = [
+	preload("res://models/Melting_0.obj"),
+	preload("res://models/Melting_1.obj"),
+	preload("res://models/Melting_2.obj"),
+	preload("res://models/Melting_3.obj"),
+	preload("res://models/Melting_4.obj"),
+	preload("res://models/Melting_5.obj")
+]
+
 var mBodies
 var mCondition
 var mHeat
@@ -50,5 +59,4 @@ func _process(delta):
 	mCondition = clamp(mCondition, -8.0, 5.0)
 	if mCondition <= 0 && oblen > 0:
 		mCondition = -8.0
-	var s = clamp(mCondition, 0, 5) / 5.0
-	$MeshInstance.scale = Vector3(s, 1, s)
+	$MeshInstance.mesh = FRAMES[int(ceil(clamp(mCondition, 0, 5)))]

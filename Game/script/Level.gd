@@ -21,8 +21,9 @@
 extends Node
 
 const MeltingTile = preload("res://MeltingTile.tscn")
+var TILES = preload("res://models/Tiles.tscn").instance()
 
-onready var mGridMap = $GridMap
+onready var mTiles = $Tiles
 onready var mMeltingTiles = $MeltingTiles
 onready var mNavigation = $Navigation
 
@@ -32,16 +33,17 @@ var Height = 10
 var Data
 
 func Init():
-	mGridMap.clear()
 	for i in mMeltingTiles.get_children():
 		mMeltingTiles.remove_child(i)
+	for i in mTiles.get_children():
+		mTiles.remove_child(i)
 	
 	# Very primitive level generator
 	var MARGIN = 6
 	Width = int(rand_range(10, 40 - 2 * MARGIN) + 2 * MARGIN)
 	Height = int(rand_range(10, 40 - 2 * MARGIN) + 2 * MARGIN)
 	Data = []
-	var table = [0, 0, 0, 0, 2, 2, 2, 2, 2, 1]
+	var table = [0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 1]
 	for i in range(Width * Height):
 		Data.push_back(table[int(floor(rand_range(0, table.size())))])
 	for x in range(Width):
@@ -68,37 +70,41 @@ func Init():
 	navmesh.add_outline(vertices)
 	navmesh.make_polygons_from_outlines()
 	"""
-	
+	var floorTiles = [0, 1, 2, 3, 4]
+	var wallTiles = [5, 6, 7]
+	var rot = [0, PI * .5, PI, PI * 1.5]
 	for y in range(Height):
 		for x in range(Width):
 			var tile = Data[x + y * Width]
 			if tile == 1:
 				# Wall
-				mGridMap.set_cell_item(x, 0, y, 1)
-				#var w = Wall.instance()
-				#w.translation = Vector3(x, 0, y)
-				#add_child(w)
+				var tl = TILES.get_child(wallTiles[int(rand_range(0, wallTiles.size()))]).duplicate(DUPLICATE_USE_INSTANCING)
+				tl.translation = Vector3(x, 0, y)
+				tl.rotation.y = rot[int(rand_range(0, rot.size()))]
+				mTiles.add_child(tl)
 			elif tile == 2:
 				# Melting tile
-				mGridMap.set_cell_item(x, 0, y, 2)
 				var mt = MeltingTile.instance()
 				mt.translation = Vector3(x, 0, y)
 				mMeltingTiles.add_child(mt)
 			elif tile == 3:
 				# Margin tile
 				if randf() < .6:
-					mGridMap.set_cell_item(x, 0, y, 0)
+					var tl = TILES.get_child(floorTiles[int(rand_range(0, floorTiles.size()))]).duplicate(DUPLICATE_USE_INSTANCING)
+					tl.translation = Vector3(x, 0, y)
+					tl.rotation.y = rot[int(rand_range(0, rot.size()))]
+					mTiles.add_child(tl)
 				else:
-					mGridMap.set_cell_item(x, 0, y, 1)
+					var tl = TILES.get_child(wallTiles[int(rand_range(0, wallTiles.size()))]).duplicate(DUPLICATE_USE_INSTANCING)
+					tl.translation = Vector3(x, 0, y)
+					tl.rotation.y = rot[int(rand_range(0, rot.size()))]
+					mTiles.add_child(tl)
 			else:
-				mGridMap.set_cell_item(x, 0, y, 0)
 				# Floor
-				pass
-				"""
-				var trans = Transform2D()
-				trans.origin = Vector2(x, y)
-				mNavigation.navpoly_add(navmesh, trans)
-				"""
+				var tl = TILES.get_child(floorTiles[int(rand_range(0, floorTiles.size()))]).duplicate(DUPLICATE_USE_INSTANCING)
+				tl.translation = Vector3(x, 0, y)
+				tl.rotation.y = rot[int(rand_range(0, rot.size()))]
+				mTiles.add_child(tl)
 
 func Navigate(from, to):
 	return []

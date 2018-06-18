@@ -107,7 +107,7 @@ func _StartLevel(none = null):
 	$CameraController.translation = plr.translation
 	
 	var numEnemies = min(int(sqrt(lvl.Width * lvl.Height) + 2), ePossible.size() - 1)
-	numEnemies = 1
+	#numEnemies = 1
 	for i in range(numEnemies):
 		var e = Enemy.instance()
 		chars.AddCharacter(e)

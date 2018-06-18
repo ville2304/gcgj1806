@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://script/Player.gd" type="Script" id=1]
+[ext_resource path="res://models/Player.dae" type="PackedScene" id=2]
 
 [sub_resource type="SphereShape" id=1]
 
@@ -281,7 +282,7 @@ tracks/0/keys = {
 
 input_ray_pickable = false
 input_capture_on_drag = false
-collision_layer = 6144
+collision_layer = 6145
 collision_mask = 1
 axis_lock_linear_x = false
 axis_lock_linear_y = true
@@ -304,6 +305,7 @@ disabled = false
 
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.894202, 0 )
+visible = false
 layers = 1
 material_override = null
 cast_shadow = 1
@@ -349,6 +351,10 @@ anims/AttackSuper = SubResource( 9 )
 anims/Block = SubResource( 10 )
 anims/Dash = SubResource( 11 )
 blend_times = [  ]
+
+[node name="Plaa" parent="Spatial" index="2" instance=ExtResource( 2 )]
+
+transform = Transform( -9.13612e-09, 0, -0.20901, 0, 0.20901, 0, 0.20901, 0, -9.13612e-09, 0, 0, 0 )
 
 [connection signal="animation_finished" from="Spatial/AnimationPlayer" to="." method="_OnAnimationFinished"]
 
