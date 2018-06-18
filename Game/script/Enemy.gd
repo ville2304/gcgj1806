@@ -220,6 +220,7 @@ func _Engage():
 		if mAttackCooldown <= 0 && mMode == Mode.IDLE:
 			# As we can't add stuff to imported animations, this will have to do.
 			var t = $Spatial/Tween
+			t.remove_all()
 			t.interpolate_callback(self, 0.5, "_OnAttack")
 			t.start()
 			mAnimationPlayer.play("Attack")

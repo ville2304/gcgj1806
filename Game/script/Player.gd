@@ -57,7 +57,7 @@ enum Mode{
 
 
 onready var mObject = $Spatial
-onready var mAnimationPlayer = $Spatial/AnimationPlayer
+onready var mAnimationPlayer = $Spatial/Char/AnimationPlayer
 
 var Dead
 
@@ -84,6 +84,9 @@ func Init(pos):
 	mBlockCooldown = 0.0
 	mObject.rotation.y = rand_range(0, 2 * PI)
 	mLabel.text = str(mTemperature, " ", mTemperatureBuffer)
+	
+	mAnimationPlayer.connect("animation_finished", self, "_OnAnimationFinished")
+	mAnimationPlayer.play("Idle-loop")
 
 func GetTemperature():
 	return mTemperature
@@ -97,10 +100,8 @@ func OnDamage(amount, push, origin):
 		push *= .5
 	elif mMode in [Mode.IDLE, Mode.WALK, Mode.COOLDOWN]:
 		# Note how damage disrupts cooldown
-		# TODO: Play anim
-		print("anim damage")
+		mAnimationPlayer.play("Damage")
 		mMode = Mode.DAMAGE
-		mMode = Mode.IDLE
 	mTemperature -= amount
 
 func OnFall(origin):
@@ -108,18 +109,14 @@ func OnFall(origin):
 		return
 	Dead = true
 	translation = origin
-	# TODO: Play anim
-	print("anim fall")
-	mAnimationPlayer.play("Block")
+	mAnimationPlayer.play("Fall")
 	mMode = Mode.FALL
 
 func Teleport(origin):
 	# Stop floor from melting
 	set_collision_layer_bit(12, false)
 	translation = origin
-	# TODO: Play anim
-	print("anim teleport")
-	mAnimationPlayer.play("Block")
+	mAnimationPlayer.play("Victory")
 	mMode = Mode.TELEPORT
 
 func _OnAnimationFinished(animName):
@@ -128,22 +125,18 @@ func _OnAnimationFinished(animName):
 		return
 	if mMode in [Mode.ATTACK1, Mode.ATTACK2, Mode.ATTACK3, Mode.SUPER_ATTACK]:
 		if mAttackComplete:
-			# TODO: Play anim
-			print("anim idle")
+			mAnimationPlayer.play("Idle-loop")
 			mMode = Mode.IDLE
 	elif mMode in [Mode.DASH, Mode.DASH_ATTACK]:
 		mDashCooldown = DASH_COOLDOWN_TIME
-		# TODO: Play anim
-		print("anim idle")
+		mAnimationPlayer.play("Idle-loop")
 		mMode = Mode.IDLE
 	elif mMode == Mode.BLOCK:
 		mBlockCooldown = BLOCK_COOLDOWN_TIME
-		# TODO: Play anim
-		print("anim idle")
+		mAnimationPlayer.play("Idle-loop")
 		mMode = Mode.IDLE
 	elif mMode == Mode.DAMAGE:
-		# TODO: Play anim
-		print("anim idle")
+		mAnimationPlayer.play("Idle-loop")
 		mMode = Mode.IDLE
 	elif mMode == Mode.TELEPORT:
 		get_parent().PlayerTeleport()
@@ -186,13 +179,13 @@ func _physics_process(delta):
 	mBlockCooldown = max(0, mBlockCooldown - delta)
 	
 	if Input.is_action_just_pressed("cooldown"):
-		# TODO: Play cooldown animation
-		print("anim cooldown")
+		mAnimationPlayer.play("Cooldown-loop")
 		mMode = Mode.COOLDOWN
 		mCooldownTimer = 0
 	if Input.is_action_just_released("cooldown"):
 		# TODO: Play cooldown off animation
 		print("anim cooldown off")
+		mAnimationPlayer.play("Idle-loop")
 		mMode = Mode.IDLE
 	
 	if mMode == Mode.IDLE || mMode == Mode.WALK:
@@ -213,15 +206,13 @@ func _physics_process(delta):
 		mvec = mvec.normalized() * WALKING_SPEED
 		if mvec.length_squared() != 0:
 			if mMode != Mode.WALK:
-				# TODO: Play anim walk
-				print("anim walk")
+				mAnimationPlayer.play("Walk-loop")
 				mMode = Mode.WALK
 			move_and_slide(mvec)
 			mObject.rotation.y = Vector2(mvec.x, mvec.z).angle_to(ZERO_ANGLE)
 		else:
 			if mMode != Mode.IDLE:
-				# TODO: Play anim idle
-				print("anim idle")
+				mAnimationPlayer.play("Idle-loop")
 				mMode = Mode.IDLE
 	
 	# Temperature control
@@ -241,9 +232,7 @@ func _physics_process(delta):
 	
 	if mTemperature <= 0:
 		Dead = true
-		# TODO: Play anim death
-		print("anim death")
-		mAnimationPlayer.play("Block")
+		mAnimationPlayer.play("Die")
 	mTemperature = clamp(mTemperature, 0, 100)
 	
 	if mTemperature >= 100:
@@ -277,7 +266,10 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("attack"):
 		if mMode == Mode.DASH:
 			# No supercharge attacks here
-			mAnimationPlayer.queue("AttackDash")
+			mAnimationPlayer.play("DashAttack")
+			$Tween.remove_all()
+			$Tween.interpolate_callback(self, 0.28, "_OnAttack", 11)
+			$Tween.start()
 			mMode = Mode.DASH_ATTACK
 		elif mMode == Mode.IDLE || mMode == Mode.WALK:
 			if mSupercharged:
@@ -285,6 +277,9 @@ func _physics_process(delta):
 			else:
 				mAttackComplete = false
 				mAnimationPlayer.play("Attack1")
+				$Tween.remove_all()
+				$Tween.interpolate_callback(self, 0.28, "_OnAttack", 1)
+				$Tween.start()
 				mMode = Mode.ATTACK1
 		elif mMode == Mode.ATTACK1:
 			if mAttackComplete:
@@ -292,7 +287,12 @@ func _physics_process(delta):
 					_SuperAttack(true)
 				else:
 					mAttackComplete = false
-					mAnimationPlayer.queue("Attack2")
+					# FIXME: Queue and tween do not play nicely together.
+					#mAnimationPlayer.queue("Attack1")
+					mAnimationPlayer.play("Attack1")
+					$Tween.remove_all()
+					$Tween.interpolate_callback(self, 0.28, "_OnAttack", 2)
+					$Tween.start()
 					mMode = Mode.ATTACK2
 		elif mMode == Mode.ATTACK2:
 			if mAttackComplete:
@@ -300,15 +300,24 @@ func _physics_process(delta):
 					_SuperAttack(true)
 				else:
 					mAttackComplete = false
-					mAnimationPlayer.queue("Attack3")
+					# FIXME: Queue and tween do not play nicely together.
+					#mAnimationPlayer.queue("Attack3")
+					mAnimationPlayer.play("Attack3")
+					$Tween.remove_all()
+					$Tween.interpolate_callback(self, 0.28, "_OnAttack", 3)
+					$Tween.start()
 					mMode = Mode.ATTACK3
 
 func _SuperAttack(queue):
 	mAttackComplete = false
-	if queue:
-		mAnimationPlayer.queue("AttackSuper")
-	else:
-		mAnimationPlayer.play("AttackSuper")
+	#if queue:
+	# FIXME: Queue and tween do not play nicely together.
+	#mAnimationPlayer.queue("SuperAttack")
+	#else:
+	mAnimationPlayer.play("SuperAttack")
+	$Tween.remove_all()
+	$Tween.interpolate_callback(self, 0.5, "_OnAttack", 10)
+	$Tween.start()
 	mMode = Mode.SUPER_ATTACK
 
 func _Dash():
