@@ -12,6 +12,8 @@ config_version=3
 
 config/name="gcgj1806"
 run/main_scene="res://Main.tscn"
+boot_splash/image="res://Splash.png"
+boot_splash/fullsize=false
 config/icon="res://icon.png"
 
 [display]
@@ -65,5 +67,6 @@ quit=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","
 
 [rendering]
 
+environment/default_clear_color=Color( 0, 0, 0, 1 )
 quality/filters/msaa=2
 environment/default_environment="res://default_env.tres"
